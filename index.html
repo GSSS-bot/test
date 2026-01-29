@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>GSSS説明書（コメント付き :root版）</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* =========================
+   変数定義（:root）
+   ここで色や余白・サイズを一括管理すると調整が楽
+========================= */
+:root{
+  /* ----- 全体 ----- */
+  --body-padding: 32px;              /* ページ全体の余白 */
+  --font-family: "Segoe UI", sans-serif; /* 全体フォント */
+  --bg-color: #f0f4f8;               /* ページ背景色 */
+  --text-color: #1f2937;             /* ページ本文文字色 */
+  --line-height: 1.5;                /* 行間（文字の縦間隔） */
+
+  /* ----- 見出し ----- */
+  --h1-size: 2.2rem;                 /* H1文字サイズ */
+  --h1-color: #111827;               /* H1文字色 */
+  --section-gap: 64px;               /* セクション間隔（上下の余白） */
+  --section-title-size: 1.7rem;      /* H2見出しサイズ */
+  --section-title-color: #111827;    /* H2見出し色 */
+  --h3-size: 1.1rem;                 /* H3文字サイズ */
+  --h3-color: #1e40af;               /* H3文字色 */
+
+  /* ----- レイアウト ----- */
+  --layout-gap: 24px;                 /* 左右カラム間の隙間 */
+  --toc-width: 260px;                 /* 目次カラムの幅 */
+
+  /* ----- 目次 ----- */
+  --toc-bg: #ffffff;                  /* 目次背景色 */
+  --toc-padding: 16px;                /* 目次内余白 */
+  --toc-radius: 12px;                 /* 目次角丸 */
+  --toc-shadow: 0 4px 12px rgba(0,0,0,0.05); /* 目次影 */
+  --toc-top: 80px;                     /* stickyでの上から距離 */
+  --toc-updated-color: #9ca3af;       /* 更新日文字色 */
+  --toc-link-color: #374151;          /* リンク通常色 */
+  --toc-link-active-color: #1d4ed8;   /* リンクアクティブ色 */
+  --toc-link-hover-underline: underline; /* リンクホバー時の装飾 */
+
+  /* ----- 目次開閉ボタン ----- */
+  --menu-width: 260px;                 /* メニュー幅 */
+  --menu-padding: 10px 14px;           /* メニューボタン内余白 */
+  --menu-radius: 8px;                  /* メニューボタン角丸 */
+  --menu-border: 1px solid #c7d2fe;    /* メニューボタン境界線 */
+  --menu-bg: #ffffff;                   /* メニューボタン背景色 */
+  --menu-hover-bg: #f3f4f6;             /* ホバー時背景色 */
+
+  /* ----- 本文 ----- */
+  --content-bg: #ffffff;                /* 本文背景色 */
+  --content-padding: 48px;              /* 本文内余白 */
+  --content-radius: 12px;               /* 本文角丸 */
+  --content-shadow: 0 4px 16px rgba(0,0,0,0.05); /* 本文影 */
+
+  /* ----- ボックス ----- */
+  --box-padding: 16px;                  /* ボックス内余白 */
+  --box-margin: 16px 0;                 /* ボックス上下余白 */
+  --box-shadow: 0 2px 6px rgba(0,0,0,0.03); /* ボックス影 */
+  --box-border-left: 4px solid #64748b; /* 通常ボックス左ボーダー */
+  --box-important-bg: #fef2f2;          /* 重要ボックス背景色 */
+  --box-important-border-left: 4px solid #dc2626; /* 重要ボックス左ボーダー */
+  --box-request-bg: #eff6ff;            /* 依頼ボックス背景色 */
+  --box-request-border-left: 4px solid #2563eb; /* 依頼ボックス左ボーダー */
+
+  /* ----- イントロ折りたたみ ----- */
+  --intro-bg: #e0f2fe;                  /* イントロ背景色 */
+  --intro-padding: 24px;                /* イントロ内余白 */
+  --intro-radius: 12px;                 /* イントロ角丸 */
+  --intro-shadow: 0 2px 8px rgba(0,0,0,0.05); /* イントロ影 */
+  --intro-toggle-color: #1d4ed8;        /* 折りたたみ文字色 */
+}
+
+/* =========================
+   基本スタイル
+========================= */
+body{
+  margin:0;                               /* デフォルトマージン解除 */
+  padding: var(--body-padding);           /* ページ全体余白 */
+  font-family: var(--font-family);        /* フォント設定 */
+  background: var(--bg-color);            /* 背景色 */
+  color: var(--text-color);               /* 文字色 */
+  line-height: var(--line-height);        /* 行間 */
+}
+
+h1{
+  font-size: var(--h1-size);              /* H1サイズ */
+  margin-bottom:16px;                     /* H1下余白 */
+  color: var(--h1-color);                 /* H1文字色 */
+}
+
+/* -------------------------
+   グリッドレイアウト
+   左=目次、右=本文
+   fullクラスで1カラム表示
+------------------------- */
+.layout{
+  display:grid;                           
+  grid-template-columns: var(--toc-width) 1fr; /* 左:目次, 右:本文 */
+  gap: var(--layout-gap);                  /* カラム間隙間 */
+  transition: all .3s ease;               /* スムーズ切替 */
+}
+.layout.full{
+  grid-template-columns:1fr; /* 目次非表示時1カラム */
+}
+
+/* =========================
+   目次
+========================= */
+.toc{
+  position: sticky;                        /* スクロール追従 */
+  top: var(--toc-top);                      /* sticky上から距離 */
+  align-self:start;                        
+  z-index: 50;                              /* 重なり順 */
+  background: var(--toc-bg);                /* 背景色 */
+  padding: var(--toc-padding);              /* 内余白 */
+  border-radius: var(--toc-radius);         /* 角丸 */
+  box-shadow: var(--toc-shadow);           /* 影 */
+  max-height: calc(100vh - 100px);         /* 最大高さ */
+  overflow-y: auto;                         /* 縦スクロール */
+}
+.toc.hidden{ display:none; }
+
+.toc h2{
+  font-size: 1.05rem;                      /* 小見出しサイズ */
+  margin:16px 0 8px;                       /* 上下余白 */
+  cursor:pointer;                           /* クリック可視 */
+  transition: all .2s;
+}
+.toc h2::before{ content:"▾ "; font-size:0.9rem; color:#2563eb; } /* 開閉矢印 */
+.toc h2.closed::before{ content:"▸ "; }  /* 閉じ時矢印 */
+
+.toc-group{ margin-bottom:16px; }         
+.toc-group.closed a{ display:none; }       /* 折りたたみ時リンク非表示 */
+
+.toc a{
+  display:block;                            
+  font-size:0.95rem;                        
+  color: var(--toc-link-color);            
+  text-decoration:none;                     
+  margin-bottom:6px;                        
+  padding:4px 0;                            /* クリック領域拡張 */
+  transition: all .2s;
+}
+.toc a.active{ font-weight:700; color: var(--toc-link-active-color);} /* アクティブリンク */
+.toc a:hover{ text-decoration: var(--toc-link-hover-underline); }    /* ホバー時下線 */
+
+.toc-updated{
+  margin-top:24px;                          
+  padding-top:12px;                         
+  border-top:1px solid #e5e7eb;             /* 区切り線 */
+  font-size:0.75rem;                        
+  color: var(--toc-updated-color);           /* 文字色 */
+}
+
+/* =========================
+   本文
+========================= */
+.content{
+  background: var(--content-bg);            /* 背景色 */
+  padding: var(--content-padding);          /* 内余白 */
+  border-radius: var(--content-radius);     /* 角丸 */
+  box-shadow: var(--content-shadow);        /* 影 */
+}
+
+section{ margin-bottom: var(--section-gap); } /* セクション間隔 */
+h2.section-title{ font-size: var(--section-title-size); margin-bottom:16px; color: var(--section-title-color); }
+h3{ font-size: var(--h3-size); margin:24px 0 8px; color: var(--h3-color); }
+
+/* =========================
+   ボックス
+========================= */
+.box{
+  background:#f1f5f9;                        /* 背景色 */
+  border-left: var(--box-border-left);       /* 左ボーダー */
+  padding: var(--box-padding);               /* 内余白 */
+  border-radius:0;                            /* 角丸なし */
+  margin: var(--box-margin);                  /* 上下余白 */
+  box-shadow: var(--box-shadow);             /* 影 */
+}
+.box.important{
+  background: var(--box-important-bg);       /* 背景色 */
+  border-left: var(--box-important-border-left); /* 左ボーダー */
+}
+.box.request{
+  background: var(--box-request-bg);         /* 背景色 */
+  border-left: var(--box-request-border-left); /* 左ボーダー */
+}
+
+/* =========================
+   イントロ折りたたみ
+========================= */
+.intro-box{
+  background: var(--intro-bg);               /* 背景色 */
+  padding: var(--intro-padding);             /* 内余白 */
+  margin-bottom:32px;                        
+  border-radius: var(--intro-radius);        /* 角丸 */
+  box-shadow: var(--intro-shadow);           /* 影 */
+}
+.intro-toggle{ display:inline-block; cursor:pointer; font-weight:600; color: var(--intro-toggle-color); margin-bottom:16px; transition:.2s; } /* 折りたたみ文字 */
+.intro-toggle:hover{ text-decoration:underline; }
+#introContent{ overflow:hidden; max-height:0; transition: max-height .4s ease, padding .4s ease; padding-top:0; padding-bottom:0; } /* 折りたたみ内容初期状態 */
+
+/* =========================
+   メニュー（目次開閉ボタン）
+========================= */
+.menu-toggle{
+  display:block;
+  width: var(--menu-width);                  /* 幅 */
+  margin-bottom:16px;                        
+  padding: var(--menu-padding);              /* 内余白 */
+  border-radius: var(--menu-radius);         /* 角丸 */
+  border: var(--menu-border);                /* 境界線 */
+  background: var(--menu-bg);                /* 背景色 */
+  font-size:0.95rem;
+  cursor:pointer;                            
+  position: sticky;                          
+  top:24px;                                   /* sticky上から距離 */
+  z-index:100;                               
+  transition: all .2s;
+}
+.menu-toggle:hover{ background: var(--menu-hover-bg); }
+
+/* =========================
+   レスポンシブ
+========================= */
+@media (max-width:900px){
+  .layout{ grid-template-columns:1fr; }           /* 1カラム化 */
+  .toc{ position: relative; top:auto; margin-bottom:24px; max-height:none; } /* 目次を上に固定しない */
+  .menu-toggle{ width:100%; }                    /* ボタン幅100% */
+}
+</style>
+</head>
+
+<body>
+
+<h1>【GSSS】建築事務による現場事務業務サポートとお願い</h1>
+
+<!-- =========================
+   イントロ文言（折りたたみ対応）
+========================= -->
+<div class="intro-box">
+  <div class="intro-top">
+    このサイトは、建築事務が行う業務サポートの内容と、<br>
+    円滑な現場運営のために現場側でご対応いただきたい事項をまとめた社内マニュアルです。
+  </div>
+  <div class="intro-toggle" id="introToggle">▶ このサイトの使いかた（基本ルール）</div>
+  <div id="introContent">
+    <ul>
+      <li>社内限定：URLを協力業者などの第三者へ共有しないでください。</li>
+      <li>タップで展開：各項目をクリックすると詳細手順が表示されます。</li>
+      <li>更新情報：もくじ下部に更新履歴があります。</li>
+    </ul>
+
+    <h3>▼ 必ず確認してほしい項目</h3>
+    <ul>
+      <li>建築事務によるサポート内容（４項目）</li>
+      <li>現場へのお願い
+        <ul>
+          <li>【重要】必ず確認（３項目）</li>
+          <li>【必須】現場開始準備（３項目）</li>
+          <li>【必須】現場開始後（３項目）</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>▼ その他の項目</h3>
+    <ul>
+      <li>検査対策情報：過去事例や傾向を掲載</li>
+      <li>お役立ちTips：事務業務効率化情報</li>
+    </ul>
+  </div>
+</div>
+
+<button class="menu-toggle" id="menuToggle">× 目次を閉じる</button>
+
+<div class="layout" id="layout">
+
+<nav class="toc" id="toc">
+  <div class="search">
+    <input id="searchInput" type="search" placeholder="キーワード検索">
+  </div>
+
+  <div class="toc-group">
+    <h2>建築事務サポート</h2>
+    <a href="#s1">【1】安全書類の提出依頼</a>
+    <a href="#s2">【2】新規入場者名簿</a>
+    <a href="#s3">【3】施工体制台帳</a>
+    <a href="#s4">【4】デジタルサイネージ</a>
+  </div>
+
+  <div class="toc-group">
+    <h2>現場へのお願い</h2>
+    <a href="#g1">【重要】未契約業者</a>
+    <a href="#g2">【必須】現場開始準備</a>
+    <a href="#g3">【必須】現場開始後</a>
+  </div>
+
+  <div class="toc-updated">
+    最終更新日：2026/01/28
+  </div>
+</nav>
+
+<main class="content">
+
+<section id="s1">
+<h2 class="section-title">【1】安全書類の提出依頼・初回確認</h2>
+<p>協力業者へ安全書類（グリーンファイル）について、提出依頼・受領・初回チェックをします。</p>
+<h3>安全書類提出依頼までの全体の流れ</h3>
+<ol>
+<li>契約開始（現場所長）</li>
+<li>業者追加（積算購買部）</li>
+<li>注文書送付（経理課）</li>
+<li>提出依頼（建築事務）</li>
+</ol>
+<h3>建築事務の担当フロー</h3>
+<ol>
+<li>管理表「安全書類確認状況」を確認</li>
+<li>グリーンサイトで企業招待・提出依頼</li>
+<li>書類チェック・修正依頼</li>
+</ol>
+
+<div class="box important">
+未契約業者には、安全書類の提出依頼はできません。<br>
+※未契約業者＝注文書送付完了していない業者
+</div>
+</section>
+
+
+<section id="s2">
+<h2 class="section-title">【2】新規入場者名簿</h2>
+<p>本文本文</p>
+</section>
+
+<section id="s3">
+<h2 class="section-title">【3】施工体制台帳</h2>
+<p>本文本文</p>
+</section>
+
+<section id="g1">
+<h2 class="section-title">【重要】未契約業者は安全書類の提出依頼ができません</h2>
+<p>未契約業者には、安全書類の提出依頼はできません。</p>
+<div class="box request">
+【お願い】<br>
+協力業者との契約は、できるだけ早めに進めてください。
+</div>
+<div class="box">
+【理由】<br>
+契約日程に矛盾があると、注文書の再作成など手戻りが発生します。
+</div>
+</section>
+
+<section id="g2">
+<h2 class="section-title">【必須】現場開始準備</h2>
+<p>本文本文</p>
+</section>
+
+<section id="g3">
+<h2 class="section-title">【必須】現場開始後</h2>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<p>本文本文</p>
+<!-- 省略せず全文保持 -->
+</section>
+
+
+
+</main>
+</div>
+
+
+<script>
+// =========================
+// 目次開閉ボタン
+// =========================
+const toggle = document.getElementById("menuToggle");
+const toc = document.getElementById("toc");
+const layout = document.getElementById("layout");
+
+toggle.addEventListener("click", ()=>{
+  const isHidden = toc.classList.toggle("hidden");
+  layout.classList.toggle("full", isHidden);
+  toggle.textContent = isHidden ? "☰ 目次を表示" : "× 目次を閉じる";
+});
+
+// =========================
+// 目次リンククリック → ページスクロール
+// offsetで固定ヘッダ・ボタン分ずらす
+// =========================
+document.querySelectorAll(".toc a").forEach(link=>{
+  link.addEventListener("click", e=>{
+    e.preventDefault();
+    const id = link.getAttribute("href").replace("#","");
+    const target = document.getElementById(id);
+    const offset = 35 + toggle.offsetHeight; 
+    window.scrollTo({ top: target.offsetTop - offset, behavior: "smooth" });
+  });
+});
+
+// =========================
+// イントロ折りたたみ
+// =========================
+const introToggle = document.getElementById("introToggle");
+const introContent = document.getElementById("introContent");
+let introOpen = false;
+
+introToggle.addEventListener("click", ()=>{
+  introOpen = !introOpen;
+  if(introOpen){
+    introContent.style.display = "block";
+    introContent.style.maxHeight = introContent.scrollHeight + "px";
+    introContent.style.paddingTop = "16px";
+    introContent.style.paddingBottom = "16px";
+  } else {
+    introContent.style.maxHeight = "0";
+    introContent.style.paddingTop = "0";
+    introContent.style.paddingBottom = "0";
+    setTimeout(()=>introContent.style.display="none",400);
+  }
+  introToggle.textContent = introOpen ? "▼ このサイトの使いかた（基本ルール）" : "▶ このサイトの使いかた（基本ルール）";
+});
+introContent.style.display="none"; introContent.style.maxHeight="0";
+</script>
+
+</body>
+</html>
