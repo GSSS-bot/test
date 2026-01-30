@@ -29,6 +29,9 @@
       --link: #2563eb;
       --link-visited: #7c3aed;
       --gallery-backdrop: rgba(0,0,0,0.75);
+
+      /* ヘッダー高さ（左カラムのsticky位置に使用） */
+      --header-h: 80px;
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
@@ -96,19 +99,17 @@
       gap: 0;
       max-width: 1400px;
       margin: 0 auto;
-      min-height: calc(100dvh - 80px);
-    }
-    .layout.toc-collapsed{
-      grid-template-columns: 0 1fr;
+      min-height: calc(100dvh - var(--header-h));
     }
 
     /* ===== TOC（左カラム） ===== */
     aside#tocPanel{
-      position: relative;
+      position: sticky;
+      top: var(--header-h);                  /* ヘッダー直下に固定 */
+      height: calc(100vh - var(--header-h)); /* 画面高にフィット */
+      overflow-y: auto;                      /* 左カラム内だけスクロール */
       border-right: 1px solid var(--border);
       padding: 12px;
-      overflow-y: auto;
-      min-height: calc(100dvh - 80px);
       background: #fbfbfb;
     }
     .toc-head{
@@ -123,30 +124,26 @@
       margin: 0;
     }
 
-    /* TOC開閉トグル（独立表示／閉じても残るタブ） */
-    .toc-toggle{
-      position: fixed;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 20;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 8px 10px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .toc-toggle .arrow{
-      font-weight: 700;
-      color: var(--brand);
-    }
+    /* スクロールバーを細く＆淡く */
+aside#tocPanel::-webkit-scrollbar {
+  width: 6px;
+}
 
-    /* 検索 */
+aside#tocPanel::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15); /* うっすら */
+  border-radius: 4px;
+}
+
+aside#tocPanel::-webkit-scrollbar-track {
+  background: transparent;
+}
+``
+
+    /* 検索（本文のみ対象） */
     .search{
+      position: sticky;  /* 左カラム内の上部に固定 */
+      top: 8px;
+      z-index: 10;
       border: 1px solid var(--border);
       padding: 8px;
       border-radius: var(--radius);
@@ -197,6 +194,7 @@
       font-weight: 600;
       padding: 6px;
       border-radius: 6px;
+      background: #fff;
     }
     .chapter > summary::-webkit-details-marker { display: none; }
     .chapter > summary::before{
@@ -239,6 +237,7 @@
       margin: 0 0 48px;
       padding-bottom: 24px;
       border-bottom: 1px solid var(--border);
+      scroll-margin-top: calc(var(--header-h) + 12px); /* アンカーで隠れないよう調整 */
     }
     .section h1{
       font-size: 26px;
@@ -427,22 +426,10 @@
     @media (max-width: 980px){
       :root{ --toc-w: 280px; }
     }
-    @media (max-width: 720px){
-      .layout{
-        grid-template-columns: 0 1fr; /* モバイルではデフォルトでTOCを閉じる */
-      }
-      .toc-toggle{
-        left: 6px;
-      }
-    }
+    /* 以前の「720pxでTOCを閉じる」ルールは削除済み */
   </style>
 </head>
 <body>
-  <!-- 独立したTOC開閉ボタン（閉じても表示） -->
-  <button id="tocToggle" class="toc-toggle" aria-controls="tocPanel" aria-expanded="true" title="目次の開閉">
-    <span class="arrow" aria-hidden="true">◀</span> 目次
-  </button>
-
   <!-- ヘッダー（サイトタイトル＋イントロ：開閉可） -->
   <header class="site-header" role="banner">
     <div class="header-inner">
@@ -453,7 +440,7 @@
           <strong>サイト利用方法</strong><br>
           左側の<strong>もくじ</strong>から章を展開し、項目をクリックすると右側に本文が表示されます。<br>
           上部の<strong>キーワード検索</strong>は右側本文のみを対象にハイライトし、「前へ」「次へ」で該当箇所へ移動します（Enterでも次へ）。<br>
-          左の<strong>目次ボタン</strong>で目次パネルを開閉できます。閉じた場合、右側の本文が広がって表示されます。
+          左の<strong>もくじ</strong>は画面上部に固定され、スクロール中もいつでも操作できます。
         </div>
       </details>
     </div>
@@ -479,7 +466,6 @@
 
       <!-- 章と項目（クリックで本文へ） -->
       <nav class="toc" id="tocNav">
-        <!-- サンプル：章1 -->
         <details class="chapter" open>
           <summary>1. 総則・共通</summary>
           <ul>
@@ -488,7 +474,7 @@
             <li><a href="#sec-103">問い合わせフロー</a></li>
           </ul>
         </details>
-        <!-- サンプル：章2 -->
+
         <details class="chapter">
           <summary>2. 安全・衛生</summary>
           <ul>
@@ -496,7 +482,79 @@
             <li><a href="#sec-202">衛生委員会の運用</a></li>
           </ul>
         </details>
-        <!-- サンプル：章3 -->
+
+        <details class="chapter">
+          <summary>3. 請求・調達（DigitalBuilder）</summary>
+          <ul>
+            <li><a href="#sec-301">業者向け請求：提出から承認まで</a></li>
+            <li><a href="#sec-302">社内承認フローとよくある質問</a></li>
+          </ul>
+        </details>
+        <details class="chapter" open>
+          <summary>1. 総則・共通</summary>
+          <ul>
+            <li><a href="#sec-101">サイトの目的と範囲</a></li>
+            <li><a href="#sec-102">基本ルール（現場配布物・命名規則）</a></li>
+            <li><a href="#sec-103">問い合わせフロー</a></li>
+          </ul>
+        </details>
+
+        <details class="chapter">
+          <summary>2. 安全・衛生</summary>
+          <ul>
+            <li><a href="#sec-201">安全書類の提出手順</a></li>
+            <li><a href="#sec-202">衛生委員会の運用</a></li>
+          </ul>
+        </details>
+
+        <details class="chapter">
+          <summary>3. 請求・調達（DigitalBuilder）</summary>
+          <ul>
+            <li><a href="#sec-301">業者向け請求：提出から承認まで</a></li>
+            <li><a href="#sec-302">社内承認フローとよくある質問</a></li>
+          </ul>
+        </details>
+        <details class="chapter" open>
+          <summary>1. 総則・共通</summary>
+          <ul>
+            <li><a href="#sec-101">サイトの目的と範囲</a></li>
+            <li><a href="#sec-102">基本ルール（現場配布物・命名規則）</a></li>
+            <li><a href="#sec-103">問い合わせフロー</a></li>
+          </ul>
+        </details>
+
+        <details class="chapter">
+          <summary>2. 安全・衛生</summary>
+          <ul>
+            <li><a href="#sec-201">安全書類の提出手順</a></li>
+            <li><a href="#sec-202">衛生委員会の運用</a></li>
+          </ul>
+        </details>
+
+        <details class="chapter">
+          <summary>3. 請求・調達（DigitalBuilder）</summary>
+          <ul>
+            <li><a href="#sec-301">業者向け請求：提出から承認まで</a></li>
+            <li><a href="#sec-302">社内承認フローとよくある質問</a></li>
+          </ul>
+        </details>
+        <details class="chapter" open>
+          <summary>1. 総則・共通</summary>
+          <ul>
+            <li><a href="#sec-101">サイトの目的と範囲</a></li>
+            <li><a href="#sec-102">基本ルール（現場配布物・命名規則）</a></li>
+            <li><a href="#sec-103">問い合わせフロー</a></li>
+          </ul>
+        </details>
+
+        <details class="chapter">
+          <summary>2. 安全・衛生</summary>
+          <ul>
+            <li><a href="#sec-201">安全書類の提出手順</a></li>
+            <li><a href="#sec-202">衛生委員会の運用</a></li>
+          </ul>
+        </details>
+
         <details class="chapter">
           <summary>3. 請求・調達（DigitalBuilder）</summary>
           <ul>
@@ -623,25 +681,6 @@
   </div>
 
   <script>
-    // ========== TOC 開閉 ==========
-    (function(){
-      const app = document.getElementById('app');
-      const btn = document.getElementById('tocToggle');
-      const panel = document.getElementById('tocPanel');
-      function setState(expanded){
-        btn.setAttribute('aria-expanded', String(expanded));
-        btn.querySelector('.arrow').textContent = expanded ? '◀' : '▶';
-        app.classList.toggle('toc-collapsed', !expanded);
-      }
-      btn.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        setState(!expanded);
-      });
-      // 初期：デスクトップは開く、モバイルは閉じる（CSSで閉）
-      const isCollapsed = getComputedStyle(app).gridTemplateColumns.startsWith('0');
-      setState(!isCollapsed);
-    })();
-
     // ========== TOC：現在位置をハイライト ==========
     (function(){
       const tocLinks = Array.from(document.querySelectorAll('#tocNav a'));
