@@ -10,546 +10,750 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* ===== ベース設定 ===== */
-    :root{
-    --bg: #ffffff;
-    --fg: #111;
-    --muted: #6b7280;
-    --brand: #1e40af;      /* 青系（アクセント） */
-    --accent: #f97316;     /* オレンジ（強調） */
-    --border: #e5e7eb;
-    --shadow: 0 1px 2px rgba(0,0,0,0.08);
-    --toc-w: 320px;
-    --space: 12px;
-    --radius: 8px;
-    --mark: #fff59d;
-    --mark-current: #ffd166;
-    --notice-red-bg: #fff2f2;
-    --notice-red-b: #ef4444;
-    --notice-blue-bg: #eef6ff;  /* 使わない方針（残置） */
-    --notice-blue-b: #2563eb;   /* 使わない方針（残置） */
-    --notice-gray-bg: #f3f4f6;
-    --notice-gray-b: #6b7280;
-    --link: #2563eb;
-    --link-visited: #7c3aed;
-    --gallery-backdrop: rgba(0,0,0,0.75);
+/* =========================================================
+   01：基本設定（変数）
+========================================================= */
+:root{
+  --bg: #ffffff;
+  --fg: #111;
+  --muted: #6b7280;
+  --brand: #1e40af;
+  --accent: #f97316;
+  --border: #e5e7eb;
+  --shadow: 0 1px 2px rgba(0,0,0,0.08);
 
-    /* ヘッダー高さ（左カラムのsticky位置に使用） */
-    --header-h: 102px;
+  --mark: #fff59d;
+  --mark-current: #ffd166;
 
-    /* 現場がやること（最優先カード）配色（控えめ） */
-    --task-bg: #fff8db;
-    --task-border: #fde68a;
-    --task-accent: #f59e0b;
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-    margin: 0;
-    color: var(--fg);
-    background: var(--bg);
-    font: 16px/1.7 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-    }
-    a { color: var(--link); }
-    a:visited { color: var(--link-visited); }
-    h1,h2,h3 { line-height: 1.3; }
+  --notice-red-bg: #fff2f2;
+  --notice-red-b: #ef4444;
+  --notice-gray-bg: #f3f4f6;
+  --notice-gray-b: #6b7280;
 
-    /* ===== ヘッダー（サイトタイトル + イントロ） ===== */
-    header.site-header{
-    position: fixed;       /* 完全固定 */
-    top: 0; left: 0; width: 100%;
-    z-index: 100;
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    }
-    .header-inner{
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 12px 16px;
-    }
-    .site-title{
-    margin: 0 0 4px;
-    font-size: 22px;
-    font-weight: 700;
-    }
-    details.intro{
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: #fafafa;
-    padding: 8px 12px;
-    }
-    details.intro > summary{
-    cursor: pointer;
-    list-style: none;
-    font-weight: 600;
-    outline: none;
-    }
-    details.intro > summary::-webkit-details-marker { display: none; }
-    details.intro > summary::before{
-    content: "▼ ";
-    transition: transform .2s ease;
-    display: inline-block;
-    transform: rotate(-90deg);
-    }
-    details.intro[open] > summary::before{ transform: rotate(0deg); }
-    .intro-body{ margin-top: 8px; color: #374151; font-size: 14px; }
+  --task-bg: #fff8db;
+  --task-border: #fde68a;
+  --task-accent: #f59e0b;
 
-    /* ===== レイアウト（左：TOC／右：本文） ===== */
-    .layout{
-    display: grid;
-    grid-template-columns: var(--toc-w) 1fr;
-    gap: 0;
-    max-width: 1400px;
-    margin: 0 auto;
-    min-height: calc(100dvh - var(--header-h));
-    margin-top: var(--header-h);     /* 固定ヘッダーぶん下げる */
-    }
+  --link: #2563eb;
+  --link-visited: #7c3aed;
 
-    /* ===== TOC（左カラム） ===== */
-    aside#tocPanel{
-    position: sticky;
-    top: var(--header-h);
-    height: calc(100vh - var(--header-h));
-    overflow-y: auto;
-    border-right: 1px solid var(--border);
-    padding: 12px;
-    background: #fbfbfb;
-    }
-    .toc-head{ display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .toc-title{ font-weight: 700; font-size: 16px; margin: 0; }
+  --gallery-backdrop: rgba(0,0,0,0.75);
 
-    /* スクロールバーを細く＆淡く */
-    aside#tocPanel::-webkit-scrollbar { width: 6px; }
-    aside#tocPanel::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
-    aside#tocPanel::-webkit-scrollbar-track { background: transparent; }
+  --toc-w: 320px;
+  --radius: 8px;
 
-    /* 検索（本文のみ対象） */
-    .search{
-    position: sticky;
-    top: 8px;
-    z-index: 10;
-    border: 1px solid var(--border);
-    padding: 8px;
-    border-radius: var(--radius);
-    background: #fff;
-    margin-bottom: 12px;
-    }
-    .search form{ display: grid; grid-template-columns: 1fr auto auto; gap: 6px; }
-    .search input[type="text"]{
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 14px;
-    }
-    .search button{
-    border: 1px solid var(--border);
-    background: #fff;
-    padding: 8px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    }
-    .search .meta{ margin-top: 6px; font-size: 12px; color: var(--muted); }
+  --header-h: 102px;
+}
 
-    /* もくじ（章と項目） */
-    nav.toc{
-    display: block;
-    border: 1px solid var(--border);
-    background: #fff;
-    border-radius: var(--radius);
-    padding: 8px 8px;
-    }
-    .chapter{
-    border-bottom: 1px dashed var(--border);
-    padding: 4px 0;
-    }
-    .chapter:last-child{ border-bottom: none; }
-    .chapter > summary{
-    cursor: pointer;
-    list-style: none;
-    font-weight: 600;
-    padding: 6px;
-    border-radius: 6px;
-    background: #fff;
-    }
-    .chapter > summary::-webkit-details-marker { display: none; }
-    .chapter > summary::before{ content: "▶ "; color: var(--brand); font-weight: 700; }
-    .chapter[open] > summary::before{ content: "▼ "; }
-    .chapter ul{ margin: 6px 0 8px 22px; padding: 0; list-style: none; }
-    .chapter li a{
-    text-decoration: none; display: block; padding: 6px 6px; border-radius: 6px; color: #111;
-    }
-    .chapter li a:hover, .chapter li a.active{ background: #eef2ff; color: var(--brand); }
+/* =========================================================
+   02：リセットと基本フォント
+========================================================= */
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
 
-    .last-updated{ margin-top: 12px; font-size: 12px; color: var(--muted); text-align: right; }
+body{
+  margin:0;
+  color:var(--fg);
+  background:var(--bg);
+  font-family:"Segoe UI", sans-serif;
+}
 
-    /* ===== 本文（右カラム） ===== */
-    main#content{ padding: 20px 24px; min-width: 0; }
-    .section{
-    margin: 0 0 48px; padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-    scroll-margin-top: calc(var(--header-h) + 12px);
-    }
-    .section h1{ font-size: 26px; margin-top: 0; border-left: 6px solid var(--brand); padding-left: 10px; }
-    .section h2{ font-size: 20px; margin-top: 22px; }
-    .lead{
-    color: #374151; font-size: 15px; background: #f9fafb;
-    border: 1px dashed var(--border); border-radius: var(--radius); padding: 10px 12px;
-    }
+a{ color:var(--link); }
+a:visited{ color:var(--link-visited); }
+h1,h3,h3{ line-height:1.3; }
 
-    /* ===== 強調ボックス 3種 ===== */
-    .notice{
-    margin: 14px 0; padding: 12px 12px; border-left: 6px solid; border-radius: 6px;
-    }
-    .notice .title{
-    font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
-    }
-    .notice .title i{ width: 18px; height: 18px; }
-    .notice.danger{ background: var(--notice-red-bg); border-color: var(--notice-red-b); }
-    .notice.info{ background: var(--notice-blue-bg); border-color: var(--notice-blue-b); }
-    .notice.muted{ background: var(--notice-gray-bg); border-color: var(--notice-gray-b); }
+/* =========================================================
+   03：ヘッダー
+========================================================= */
+header.site-header{
+  position:fixed;
+  top:0; left:0; width:100%;
+  z-index:100;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
 
-    /* ===== 現場で対応（最優先カード）【修正済】 ===== */
-    .task-card{
-    background: var(--task-bg);
-    border: 1px solid var(--task-border);
-    border-left: 6px solid var(--task-accent);   /* ← 修正：8px → 6px */
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin: 16px 0 18px;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
-    }
-    .task-card h2{
-    margin: 0 0 10px;
-    font-size: 18px;                              /* ← 修正：20px → 18px */
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    }
-    .task-card i{
-    width: 18px;                                   /* ← 修正：22px → 18px */
-    height: 18px;                                  /* ← 修正：22px → 18px */
-    color: #d97706;
-    }
-    .task-card ul{ margin: 0; padding-left: 20px; }
-    .task-card ul li{ margin: 4px 0; }
+.header-inner{
+  max-width:1200px;
+  margin:0 auto;
+  padding:12px 16px;
+}
 
-    /* 表 */
-    .table-wrap{ overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; }
-    table{ width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td{ border-bottom: 1px solid var(--border); padding: 10px 12px; vertical-align: top; text-align: left; }
-    th{ background: #f3f4f6; white-space: nowrap; }
+.site-title{
+  margin:0 0 4px;
+  font-size:22px;
+  font-weight:700;
+}
 
-    /* 画像／リンク */
-    figure{ margin: 14px 0; }
-    figure img{ max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 6px; box-shadow: var(--shadow); }
-    figure figcaption{ font-size: 12px; color: var(--muted); margin-top: 6px; }
+details.intro{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:#fafafa;
+  padding:8px 12px;
+}
 
-    /* 画像ギャラリー */
-    .gallery{
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px; margin-top: 10px;
-    }
-    .gallery .thumb{
-    display: block; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: #fff; cursor: zoom-in;
-    }
-    .gallery img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+details.intro > summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:600;
+}
 
-    /* モーダル */
-    .modal{
-    position: fixed; inset: 0; background: var(--gallery-backdrop);
-    display: none; align-items: center; justify-content: center; z-index: 100;
-    }
-    .modal[aria-hidden="false"]{ display: flex; }
-    .modal-dialog{
-    background: #000; color: #fff; max-width: 90vw; max-height: 85vh; border-radius: 8px;
-    position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 8px; padding: 12px;
-    }
-    .modal img{
-    max-width: 86vw; max-height: 70vh; width: auto; height: auto; margin: 0 auto; display: block; border-radius: 6px;
-    }
-    .modal .caption{ font-size: 14px; color: #e5e7eb; text-align: center; }
-    .modal .controls{
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; pointer-events: none;
-    }
-    .modal .controls button{
-    pointer-events: auto; border: none; background: rgba(255,255,255,0.12); color: #fff;
-    padding: 10px 12px; border-radius: 999px; cursor: pointer; margin: 12px;
-    }
-    .modal .close{
-    position: absolute; top: 8px; right: 8px; border: none; background: rgba(255,255,255,0.18);
-    color: #fff; border-radius: 999px; padding: 8px 10px; cursor: pointer;
-    }
+details.intro > summary::-webkit-details-marker{
+  display:none;
+}
 
-    /* 検索ハイライト */
-    mark.hl{ background: var(--mark); padding: 0 1px; border-radius: 2px; }
-    mark.hl.current{ background: var(--mark-current); outline: 2px solid #f59e0b; }
+details.intro > summary::before{
+  content:"▼ ";
+  transform:rotate(-90deg);
+  transition:.2s;
+}
 
-    /* レスポンシブ */
-    @media (max-width: 980px){
-    :root{ --toc-w: 280px; }
-    }
+details.intro[open] > summary::before{
+  transform:rotate(0deg);
+}
+
+/* =========================================================
+   04：レイアウト（2カラム）
+========================================================= */
+.layout{
+  display:grid;
+  grid-template-columns:var(--toc-w) 1fr;
+  max-width:1400px;
+  margin:0 auto;
+  margin-top:var(--header-h);
+  min-height:calc(100dvh - var(--header-h));
+}
+
+/* =========================================================
+   05：TOC（左カラム）
+========================================================= */
+aside#tocPanel{
+  position:sticky;
+  top:var(--header-h);
+  height:calc(100vh - var(--header-h));
+  overflow-y:auto;
+  border-right:1px solid var(--border);
+  background:#fbfbfb;
+  padding:12px;
+}
+
+.toc-title{
+  font-weight:700;
+  font-size:16px;
+  margin:0 0 8px;
+}
+
+nav.toc{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:var(--radius);
+  padding:8px;
+}
+
+/* ---- チャプター折りたたみ ---- */
+.chapter{
+  padding:4px 0;
+  border-bottom:1px dashed var(--border);
+}
+.chapter:last-child{ border-bottom:none; }
+
+/* 黒い▶（標準）を消す */
+.chapter > summary::-webkit-details-marker{
+  display:none !important;
+}
+
+.chapter > summary{
+  cursor:pointer;
+  list-style:none;
+  padding:6px;
+  font-weight:600;
+}
+
+/* チャプターごとの開閉アイコン */
+.chapter > summary::before{
+  content:"😊 ";
+  color:var(--brand);
+  font-weight:700;
+}
+.chapter[open] > summary::before{
+  content:"😄 ";
+}
+
+.chapter ul{
+  margin:6px 0 8px 22px;
+  padding:0;
+  list-style:none;
+}
+
+.chapter li a{
+  display:block;
+  padding:6px;
+  text-decoration:none;
+  border-radius:6px;
+  color:#111;
+}
+
+.chapter li a:hover,
+.chapter li a.active{
+  background:#eef2ff;
+  color:var(--brand);
+}
+
+/* もくじのスクロールバー */
+#tocPanel {
+  scrollbar-width: thin;             /* Firefox */
+  scrollbar-color: #dcdcdc transparent;
+}
+
+/* Chrome / Edge / Safari */
+#tocPanel::-webkit-scrollbar {
+  width: 6px;                        /* スクロールバーの太さ */
+}
+
+#tocPanel::-webkit-scrollbar-track {
+  background: transparent;           /* 背景は透明 */
+}
+
+#tocPanel::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);      /* 半透明で存在を薄く */
+  border-radius: 4px;                /* 丸く、控えめに */
+}
+
+#tocPanel::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.25);      /* ホバー時だけ少し濃く */
+}
+
+
+/* ===========================
+   06：検索バー
+   =========================== */
+
+.search {
+  margin-bottom: 12px;
+}
+
+/* 白い箱（もくじと揃える：枠・角丸・影） */
+.search-form{
+  display: grid;
+  grid-template-columns: 1fr auto auto;   /* 左から：入力／前へ／次へ */
+  grid-template-rows: auto auto;          /* 1行目：入力＋ボタン／2行目：件数 */
+  grid-template-areas:
+    "input prev next"
+    "meta  meta meta";
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;                      /* もくじ(nav.toc)と同じ角丸 */
+  box-shadow: var(--shadow);               /* もくじと同じ影 */
+}
+
+/* 各エリア割当（崩れ防止） */
+#searchInput { grid-area: input; }
+#prevBtn     { grid-area: prev;  }
+#nextBtn     { grid-area: next;  }
+#searchMeta  { grid-area: meta;  }
+
+/* 入力欄（元デザインと同じ高さ・色） */
+#searchInput{
+  min-width: 0;                  /* 余白狭い時のはみ出し防止 */
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--fg);
+  background: #f6f7f9;           /* ほんのりグレー */
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ボタン（高さ揃え・角丸） */
+#prevBtn,
+#nextBtn{
+  padding: 8px 14px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--fg);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#prevBtn:hover,
+#nextBtn:hover{ background: #f3f4f6; }
+
+/* 件数（箱の中の2行目・左揃え・控えめ） */
+#searchMeta{
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 0;                 /* Grid なので余白は0でOK */
+  padding-left: 2px;
+}
+
+/* 最終更新日 */
+.last-updated{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:16px;
+}
+
+/* 検索ハイライト */
+mark.hl{
+  background:var(--mark);
+  border-radius:2px;
+}
+
+mark.hl.current{
+  background:var(--mark-current);
+  outline:2px solid #f59e0b;
+}
+
+/* =========================================================
+   07：本文
+========================================================= */
+main#content{
+  padding:20px 24px;
+}
+
+.section{
+  margin:0 0 48px;
+  padding-bottom:24px;
+  border-bottom:1px solid var(--border);
+  scroll-margin-top:calc(var(--header-h) + 12px);
+}
+
+.section h1{
+  margin-top:0;
+  font-size:26px;
+  border-left:6px solid var(--brand);
+  padding-left:10px;
+}
+
+/* =========================================================
+   08：カード（共通＋黄色 card-y / 赤 card-r / グレー card-g）
+========================================================= */
+
+/* カード共通 */
+.card{
+  padding:14px 16px;
+  margin:16px 0 18px;
+  border-radius:var(--radius);
+  border-left:6px solid;
+  background:#fff;
+  line-height:1.7;
+  box-shadow:0 1px 0 rgba(0,0,0,0.03);
+}
+
+/* カード共通のタイトル行 */
+.card h3{
+  margin:0 0 8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:20px;
+  font-weight:600;
+}
+
+/* カード内アイコン */
+.card h3 svg{
+  width:22px;
+  height:22px;
+  stroke-width:1.8;
+}
+
+/* ===== 色別カード ===== */
+
+/* 黄色：現場対応・タスク */
+.card-y{
+  background:var(--task-bg);
+  border-color:var(--task-accent);
+}
+
+/* グレー：補足・説明 */
+.card-g{
+  background:var(--notice-gray-bg);
+  border-color:var(--notice-gray-b);
+}
+
+/* 赤：危険・注意 */
+.card-r{
+  background:var(--notice-red-bg);
+  border-color:var(--notice-red-b);
+}
+
+/* =========================================================
+   09：テーブル
+========================================================= */
+.table-wrap{
+  overflow-x:auto;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:#fff;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+th,td{
+  border-bottom:1px solid var(--border);
+  padding:10px 12px;
+}
+
+/* =========================================================
+   10：画像・ギャラリー・モーダル
+========================================================= */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+
+.gallery .thumb{
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;
+  cursor:zoom-in;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:var(--gallery-backdrop);
+}
+
+.modal[aria-hidden="false"]{ display:flex; }
+
+/* =========================================================
+   11：レスポンシブ
+========================================================= */
+@media(max-width:980px){
+  :root{ --toc-w:280px; }
+  .layout{ grid-template-columns:1fr; }
+}
   </style>
 </head>
+
 <body>
-  <!-- ヘッダー（サイトタイトル＋イントロ：開閉可） -->
+
+  <!-- ===========================
+       HEADER（サイトタイトル＋説明）
+     =========================== -->
   <header class="site-header" role="banner">
     <div class="header-inner">
+
+      <!-- サイトタイトル -->
       <h1 class="site-title">現場員向け社内マニュアル</h1>
-        <details class="intro" id="intro">
-        <summary aria-controls="intro-body"> 本サイトの利用方法　⚠️第三者へのURL共有厳禁⚠️</summary>
+
+      <!-- 利用方法（details/summary） -->
+      <details class="intro" id="intro">
+        <summary aria-controls="intro-body">
+          本サイトの利用方法　⚠️第三者へのURL共有厳禁⚠️
+        </summary>
 
         <div id="intro-body" class="intro-body">
-            このサイトは、建築事務が行う業務サポートの内容と、
-            円滑な現場運営のために現場側でご対応いただきたい事項をまとめた社内マニュアルです。<br><br>
 
-            ・社内向け資料です。URLの第三者への共有はご遠慮ください。<br>
-            ・左側の<strong>もくじ</strong>から章を展開し、項目をクリックすると右側に本文が表示されます。<br>
-            ・上部の<strong>キーワード検索</strong>は右側本文のみを対象にハイライトし、「前へ」「次へ」で該当箇所へ移動します（Enterでも次へ）。<br>
-            ・左の<strong>もくじ</strong>は画面上部に固定され、スクロール中もいつでも操作できます。<br><br>
+          <p>
+            このサイトは、建築事務が行う業務サポート内容と、円滑な現場運営のために現場側で
+            ご対応いただきたい事項をまとめた社内マニュアルです。
+          </p>
 
-            <h3>ここだけは「必ず」一度目を通してください</h3>
-            初回から全てを読み込む必要はありません。ただし、円滑な連携のために、以下の項目だけは必ず事前に確認をお願いします。<br>
-            ・建築事務サポート（４項目）<br>
-            ・現場所長・現場員へお願いしたいこと<br>
-            &emsp;◦ 【重要】かならずご確認ください（３項目）<br>
-            &emsp;◦ 【必須】現場開始準備（３項目）<br>
-            &emsp;◦ 【必須】現場開始後（３項目）<br><br>
+          <ul>
+            <li>社内向け資料です。URLの第三者への共有はご遠慮ください。</li>
+            <li>左側の「もくじ」から章を選ぶと、右側に本文が表示されます。</li>
+            <li>上部の検索欄では本文だけを検索できます。（Enter＝次へ）</li>
+            <li>左のもくじは常に画面固定で、スクロール中でも操作できます。</li>
+          </ul>
 
-            <h3>その他の項目</h3>
-            現場運営を円滑にし、事務負担を軽減するための情報を掲載しています。<br>
-            余裕がある際や、特定の困りごとがある時にチェックしてみてください。<br><br>
+          <h3>ここだけは「必ず」一度目を通してください</h3>
+          <p>初回からすべて読む必要はありませんが、以下だけは事前確認をお願いします。</p>
 
-            ・現場対応・検査対策：過去に検査をパスできた事例や、傾向と対策などを掲載しています。検査対応の参考にしてください。<br>
-            ・お役立ち・Tips：事務業務を効率化する情報を紹介しています。
+          <ul>
+            <li>建築事務サポート（4項目）</li>
+            <li>
+              現場所長・現場員へお願いしたいこと
+              <ul>
+                <li>【重要】かならずご確認ください（3項目）</li>
+                <li>【必須】現場開始準備（3項目）</li>
+                <li>【必須】現場開始後（3項目）</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h3>その他の項目</h3>
+          <p>
+            現場運営の円滑化・事務負担の軽減につながる情報を掲載しています。
+            余裕のある際や困りごとがある時に確認してください。
+          </p>
+
+          <ul>
+            <li>現場対応・検査対策：検査での指摘回避例・傾向と対策を掲載</li>
+            <li>お役立ち・Tips：業務効率化のための小技や便利情報</li>
+          </ul>
+
         </div>
-        </details>
+      </details>
+
     </div>
   </header>
 
-  <!-- 2カラムレイアウト -->
+<!-- ===========================
+       LAYOUT 開始（TOC＋本文）
+     =========================== -->
   <div id="app" class="layout">
-    <!-- 左：TOCパネル -->
+
+    <!-- ===========================
+         ASIDE：左カラム（目次＋検索）
+       =========================== -->
     <aside id="tocPanel" role="complementary" aria-label="もくじ">
-      <div class="toc-head">
+
+      <!-- もくじ見出し -->
+      <header class="toc-head">
         <p class="toc-title">もくじ</p>
-      </div>
+      </header>
 
-      <!-- 検索：右カラム本文のみ対象 -->
-      <div class="search" aria-label="本文検索">
-        <form id="searchForm" role="search">
-          <input type="text" id="searchInput" placeholder="本文を検索（例：安全書類）" aria-label="本文検索キーワード" />
-          <button type="button" id="prevBtn" aria-label="前へ">前へ</button>
-          <button type="button" id="nextBtn" aria-label="次へ">次へ</button>
-        </form>
-        <div class="meta" id="searchMeta" aria-live="polite">0件</div>
-      </div>
+      <!-- 本文検索（右カラムだけを検索） -->
+<div class="search" aria-label="本文検索">
+  <form id="searchForm" role="search" class="search-form">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="本文を検索（例：安全書類）"
+      aria-label="本文検索キーワード"
+    />
 
-      <!-- 章と項目（クリックで本文へ） -->
-      <nav class="toc" id="tocNav">
-        <!-- ■ 建築事務サポート -->
-        <details class="chapter" open>
-          <summary>建築事務サポート</summary>
-          <ul>
-            <li><a href="#sec-support-1">【1】安全書類の提出依頼</a></li>
-            <li><a href="#sec-support-2">【2】新規入場者名簿</a></li>
-            <li><a href="#sec-support-3">【3】施工体制台帳</a></li>
-            <li><a href="#sec-support-4">【4】デジタルサイネージ</a></li>
-          </ul>
-        </details>
+    <button type="button" id="prevBtn" aria-label="前へ">前へ</button>
+    <button type="button" id="nextBtn" aria-label="次へ">次へ</button>
 
-        <!-- ■ 【重要】必読項目です -->
-        <details class="chapter">
-          <summary>【重要】必読項目です</summary>
-          <ul>
-            <li><a href="#sec-important-1">早期契約にご協力ください</a></li>
-            <li><a href="#sec-important-2">管理表「安全書類確認状況」</a></li>
-            <li><a href="#sec-important-3">書類提出対象業者の連絡先</a></li>
-          </ul>
-        </details>
+    <!-- 件数を“箱の中”へ -->
+    <div class="meta" id="searchMeta" aria-live="polite">0件</div>
+  </form>
+</div>
+      </section>
 
-        <!-- ■ 【必須】現場開始準備 -->
-        <details class="chapter">
-          <summary>【必須】現場開始準備</summary>
-          <ul>
-            <li><a href="#sec-prep-1">安全書類雛形Excel記入</a></li>
-            <li><a href="#sec-prep-2">「台帳作成通知」の掲示</a></li>
-            <li><a href="#sec-prep-3">災防協規約作成・綴じ込み</a></li>
-          </ul>
-        </details>
+      <!-- 目次本体（アンカーはJS依存のためIDを維持） -->
+<nav class="toc" id="tocNav" aria-label="章と項目の一覧">
 
-        <!-- ■ 【必須】現場開始後 -->
-        <details class="chapter">
-          <summary>【必須】現場開始後</summary>
-          <ul>
-            <li><a href="#sec-after-1">Teams確認とリアクション</a></li>
-            <li><a href="#sec-after-2">新規入場者アンケート提出</a></li>
-            <li><a href="#sec-after-3">業者指導（災防協資料）</a></li>
-          </ul>
-        </details>
+  <details class="chapter" open>
+    <summary>建築事務サポート</summary>
+    <ul>
+      <li><a href="#sec-support-1">【1】書類の提出依頼</a></li>
+      <li><a href="#sec-support-2">【2】新規入場者名簿</a></li>
+      <li><a href="#sec-support-3">【3】施工体制台帳</a></li>
+      <li><a href="#sec-support-4">【4】デジタルサイネージ</a></li>
+    </ul>
+  </details>
 
-        <!-- ■ 現場対応・検査対策 -->
-        <details class="chapter">
-          <summary>現場対応・検査対策</summary>
-          <ul>
-            <li><a href="#sec-field-1">工期延長対応手順</a></li>
-            <li><a href="#sec-field-2">社会保険未加入者</a></li>
-            <li><a href="#sec-field-3">現場代理人の入場日</a></li>
-            <li><a href="#sec-field-4">在留カードの管理</a></li>
-            <li><a href="#sec-field-5">専任技術者証明書類</a></li>
-            <li><a href="#sec-field-6">ポスターでアピール</a></li>
-          </ul>
-        </details>
+  <details class="chapter">
+    <summary>【重要】必読項目です</summary>
+    <ul>
+      <li><a href="#sec-important-1">早期契約にご協力ください</a></li>
+      <li><a href="#sec-important-2">管理表「安全書類確認状況」</a></li>
+      <li><a href="#sec-important-3">書類提出対象協力会社の連絡先</a></li>
+    </ul>
+  </details>
 
-        <!-- ■ お役立ち・Tips -->
-        <details class="chapter">
-          <summary>お役立ち・Tips</summary>
-          <ul>
-            <li><a href="#sec-tips-1">iPadでグリーンサイト閲覧</a></li>
-            <li><a href="#sec-tips-2">Edge記憶のパスワード削除</a></li>
-            <li><a href="#sec-tips-3">Dropbox「スター」活用</a></li>
-            <li><a href="#sec-tips-4">AI活用のススメ</a></li>
-          </ul>
-        </details>
-      </nav>
+  <details class="chapter">
+    <summary>【必須】現場開始準備</summary>
+    <ul>
+      <li><a href="#sec-prep-1">安全書類雛形Excel記入</a></li>
+      <li><a href="#sec-prep-2">「台帳作成通知」の掲示</a></li>
+      <li><a href="#sec-prep-3">災防協規約作成・綴じ込み</a></li>
+    </ul>
+  </details>
 
-      <!-- 最終更新日（手打ち） -->
-      <div class="last-updated">最終更新日：2026-01-30</div>
+  <details class="chapter">
+    <summary>【必須】現場開始後</summary>
+    <ul>
+      <li><a href="#sec-after-1">Teams確認とリアクション</a></li>
+      <li><a href="#sec-after-2">新規入場者アンケート提出</a></li>
+      <li><a href="#sec-after-3">協力会社指導（災防協資料）</a></li>
+    </ul>
+  </details>
+
+  <details class="chapter">
+    <summary>現場対応・検査対策</summary>
+    <ul>
+      <li><a href="#sec-field-1">工期延長対応手順</a></li>
+      <li><a href="#sec-field-2">社会保険未加入者</a></li>
+      <li><a href="#sec-field-3">現場代理人の入場日</a></li>
+      <li><a href="#sec-field-4">在留カードの管理</a></li>
+      <li><a href="#sec-field-5">専任技術者証明書類</a></li>
+      <li><a href="#sec-field-6">ポスターでアピール</a></li>
+    </ul>
+  </details>
+
+  <details class="chapter">
+    <summary>お役立ち・Tips</summary>
+    <ul>
+      <li><a href="#sec-tips-1">iPadでグリーンサイト閲覧</a></li>
+      <li><a href="#sec-tips-2">Edge記憶のパスワード削除</a></li>
+      <li><a href="#sec-tips-3">Dropbox「スター」活用</a></li>
+      <li><a href="#sec-tips-4">AI活用のススメ</a></li>
+    </ul>
+  </details>
+
+</nav>
+
+      <!-- 最終更新日 -->
+      <p class="last-updated">最終更新日：2026-01-30</p>
+
     </aside>
 
-    <!-- 右：本文（TOC順に配置。未作成はダミー） -->
+<!-- ===========================
+         MAIN：右カラム（本文）
+       =========================== -->
     <main id="content" role="main">
-      <!-- ■■■ 建築事務サポート ■■■ -->
 
-      <!-- 【1】安全書類の提出依頼（再構成版） -->
+      <!-- ===========================
+           建築事務サポート【1】
+         =========================== -->
       <section id="sec-support-1" class="section" tabindex="-1" aria-labelledby="sec-support-1-title">
-        <h1 id="sec-support-1-title">【1】安全書類の提出依頼</h1>
+        <h1 id="sec-support-1-title">安全書類（グリーンファイル）の提出依頼</h1>
 
-        <!-- 概要 -->
         <p class="lead">
-          協力業者へ<strong>安全書類（グリーンファイル）の提出依頼</strong>を行う際の、現場・積算購買部・経理・建築事務の
-          役割分担と流れを<strong>省略せずすべて</strong>記載しています。上のカードだけでも流れは把握できますが、
-          下に詳細説明・例外・FAQを完全収録しています。
+          【建築事務によるサポート内容】協力会社へ安全書類（グリーンファイル）について、提出依頼・受領・初回チェックを行います。
         </p>
 
         <!-- 現場で対応 -->
-        <div class="task-card">
-          <h2><i data-lucide="hard-hat"></i> 現場で対応</h2>
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
           <ul>
-            <li>積算購買へ<strong>見積提出</strong>（契約開始）</li>
-            <li>経理の<strong>注文書送付＝契約完了</strong>を確認</li>
-            <li>未提出の業者へ<strong>直接声かけ</strong> or <strong>建築事務へ連絡</strong></li>
-            <li>安全書類が揃ったら<strong>入場可否を判断</strong></li>
+            <li>積算購買へ見積書を提出（契約開始）</li>
+            <li>経理の注文書送付のタイミングで契約完了扱いということを認識</li>
+            <li>協力会社との契約・書類提出状況は管理表「安全書類確認状況」で確認</li>
+            <li>書類未提出の協力会社へ直接声かけ or 建築事務へ催促依頼</li>
           </ul>
         </div>
 
-        <!-- 建築事務 -->
-        <div class="notice muted">
-          <div class="title"><i data-lucide="handshake"></i> 建築事務がサポート</div>
+        <!-- 建築事務がサポート -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
+          <ul>
+            <li>契約完了を確認し、GSで企業招待＋提出依頼メール送付、適宜電話連絡</li>
+            <li>提出物の受領 → 初回チェック → 不備修正依頼</li>
+            <li>書類提出・不備状況をExcel管理表へまとめ（現場へ共有可）</li>
+            <li>書類提出状況を管理表「安全書類確認状況」に反映</li>
+          </ul>
+        </div>
+
+        <!-- 注意（元の配色を維持） -->
+        <div class="card card-r">
+          <h3><i data-lucide="triangle-alert"></i> 注意</h3>
           <div class="body">
-            ・契約完了を確認し、GSで<strong>企業招待＋提出依頼メール送付</strong><br>
-            ・提出物の<strong>受領→初回チェック→不備修正依頼</strong><br>
-            ・最新の進捗を<strong>管理表「安全書類確認状況」</strong>に反映・共有
+            未契約（＝注文書未送付）の協力会社には依頼不可<br>
+            日程矛盾・注文書再作成など大きな手戻りが生じるため　※詳細はこちら
           </div>
         </div>
 
-        <!-- 注意 -->
-        <div class="notice danger" role="alert">
-          <div class="title"><i data-lucide="triangle-alert"></i> 注意</div>
-          <div class="body">
-            <strong>未契約（＝注文書未送付）の業者には依頼不可</strong>。誤依頼は、日程矛盾・書類やり直し・注文書再作成など大きな手戻りを招きます。
-          </div>
-        </div>
-
-        <!-- 詳細フロー -->
-        <h2>全体の流れ（ロング版）</h2>
+        <!-- 全体の流れ -->
+        <h3>全体の流れ</h3>
         <ol>
-          <li><strong>契約開始（現場所長）</strong>：積算購買へ見積書を提出し、契約手続きを開始</li>
-          <li><strong>業者追加（積算購買部）</strong>：管理表「安全書類確認状況」に業者が追加（契約日程に注意）</li>
-          <li><strong>注文書送付（経理）</strong>：業者と現場所長へ注文書送付 → <strong>契約完了</strong></li>
-          <li><strong>提出依頼（建築事務）</strong>：GSで<strong>企業招待＋提出依頼</strong> → 受領・初回チェック・不備修正依頼</li>
+          <li>契約開始（現場所長）　　　：積算購買へ見積書を提出し、契約手続きを開始</li>
+          <li>協力会社追加（積算購買部）：管理表「安全書類確認状況」に協力会社追加</li>
+          <li>注文書送付（経理課）　　　：協力会社と現場所長へ注文書送付 → 契約完了</li>
+          <li>提出依頼（建築事務）　　　：GSで企業招待＋提出依頼 → 受領・初回チェック・不備修正依頼</li>
         </ol>
 
         <!-- 期限と確認 -->
-        <h2>提出期限・状況確認</h2>
+        <h3>提出期限・状況確認</h3>
         <ul>
-          <li>提出期限の目安：<strong>入場の1か月前まで</strong></li>
-          <li>最新の依頼・提出状況：<strong>管理表「安全書類確認状況」</strong>で確認</li>
+          <li>提出期限の目安：入場の1か月前まで</li>
+          <li>最新の依頼・提出状況：管理表「安全書類確認状況」で確認</li>
         </ul>
 
         <!-- 催促 -->
-        <h2>提出を急ぎたい場合（催促）</h2>
+        <h3>提出を急ぎたい場合（催促）</h3>
         <ul>
           <li>現場から直接連絡（電話／Teams）</li>
           <li>建築事務へ共有 → 事務側からも催促・調整を実施</li>
         </ul>
+
         <h3>催促の例文（コピペ可）</h3>
         <blockquote>
           「◯◯工事の安全書類につきまして、提出が未確認です。<br>
-          入場は◯/◯予定のため、<strong>本日中</strong>のご対応をお願いいたします。」
+          入場は◯/◯予定のため、本日中のご対応をお願いいたします。」
         </blockquote>
 
         <!-- FAQ -->
-        <h2>よくある質問（FAQ）</h2>
-        <p><strong>Q.</strong> 契約前でも書類依頼したい場合？</p>
-        <p><strong>A.</strong> 以下すべてを満たす場合、例外的に可能：</p>
+        <h3>よくある質問（FAQ）</h3>
+        <p>Q. 契約前でも書類依頼したい場合？</p>
+        <p>A. 以下すべてを満たす場合、例外的に可能：</p>
         <ul>
           <li>入場日と契約日程に矛盾がない（<em>注文日 → 工期開始 → 入場日</em>の順が保たれる）</li>
           <li>入場日の前倒しの可能性がない</li>
-          <li>業者が<strong>GS加入済</strong>（別現場で提出履歴あり）</li>
+          <li>協力会社がGS加入済（別現場で提出履歴あり）</li>
           <li>現場から直接の声かけが可能</li>
         </ul>
 
         <!-- 補足 -->
-        <h2>補足（背景）</h2>
+        <h3>補足（背景）</h3>
         <p>
           GS運用は契約と連動します。契約未整備のまま依頼すると、入力済み書類の作り直しや注文書の再発行が発生します。
-          そのため<strong>未契約業者への依頼は原則不可</strong>としています。
+          そのため未契約協力会社への依頼は原則不可としています。
         </p>
       </section>
 
-      <!-- 【2】新規入場者名簿（ダミー） -->
+      <!-- ===========================
+           建築事務サポート【2】
+         =========================== -->
       <section id="sec-support-2" class="section" tabindex="-1" aria-labelledby="sec-support-2-title">
-        <h1 id="sec-support-2-title">【2】新規入場者名簿</h1>
+        <h1 id="sec-support-2-title">新規入場者名簿</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 【3】施工体制台帳（ダミー） -->
+      <!-- ===========================
+           建築事務サポート【3】
+         =========================== -->
       <section id="sec-support-3" class="section" tabindex="-1" aria-labelledby="sec-support-3-title">
-        <h1 id="sec-support-3-title">【3】施工体制台帳</h1>
+        <h1 id="sec-support-3-title">施工体制台帳</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 【4】デジタルサイネージ（ダミー） -->
+      <!-- ===========================
+           建築事務サポート【4】
+         =========================== -->
       <section id="sec-support-4" class="section" tabindex="-1" aria-labelledby="sec-support-4-title">
-        <h1 id="sec-support-4-title">【4】デジタルサイネージ</h1>
+        <h1 id="sec-support-4-title">デジタルサイネージ</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- ■■■ 【重要】必読項目です ■■■ -->
-
-      <!-- 早期契約にご協力ください（強化版） -->
+<!-- ===========================
+           【重要】必読項目です（1）
+         =========================== -->
       <section id="sec-important-1" class="section" tabindex="-1" aria-labelledby="sec-important-1-title">
         <h1 id="sec-important-1-title">早期契約にご協力ください</h1>
 
-        <!-- 概要 -->
         <p class="lead">
-          安全書類の提出依頼は<strong>契約完了（注文書送付）後のみ</strong>可能です。
+          安全書類の提出依頼は契約完了（注文書送付）後のみ可能です。
           早期契約は現場立ち上げの遅延や書類のやり直しを防ぎます。
         </p>
 
-        <div class="task-card">
-          <h2><i data-lucide="hard-hat"></i> 現場で対応</h2>
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
           <ul>
             <li>見積提出 → 契約手続きを早めに開始</li>
             <li>注文書送付（契約完了）を確認</li>
-            <li>契約前入場が必要な場合は<strong>積算購買・建築事務へ事前相談</strong></li>
+            <li>契約前入場が必要な場合は積算購買・建築事務へ事前相談</li>
           </ul>
         </div>
 
-        <div class="notice muted">
-          <div class="title"><i data-lucide="handshake"></i> 建築事務がサポート</div>
+        <!-- 建築事務がサポート（灰色のカード） -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
           <div class="body">
             ・契約完了後のみGSで招待・提出依頼<br>
             ・提出物のチェック／不備対応<br>
@@ -557,350 +761,402 @@
           </div>
         </div>
 
-        <div class="notice danger" role="alert">
-          <div class="title"><i data-lucide="triangle-alert"></i> 未契約業者には依頼不可</div>
-          <div class="body">
-            未契約＝<strong>注文書未送付</strong>。<br>
-            <em>注文日 → 工期開始 → 入場日</em>の順が崩れると、書類やり直し／注文書再作成／見積再発行の手戻りが発生します。
-          </div>
+        <!-- 注意（赤のカード） -->
+        <div class="card card-r" role="alert">
+          <h3><i data-lucide="triangle-alert"></i> 未契約協力会社には依頼不可</h3>
+          <p>
+            未契約＝注文書未送付。<br>
+            <em>注文日 → 工期開始 → 入場日</em> の順が崩れると、
+            書類やり直し／注文書再作成／見積再発行の手戻りが発生します。
+          </p>
         </div>
 
-        <h2>契約前依頼が可能なケース（例外）</h2>
+        <h3>契約前依頼が可能なケース（例外）</h3>
         <ul>
-          <li>契約日程と入場日に矛盾なし</li>
-          <li>入場の前倒し可能性なし</li>
-          <li>業者が<strong>GS加入済</strong>（提出履歴あり）</li>
+          <li>契約日程と入場日に矛盾がない</li>
+          <li>入場の前倒し可能性がない</li>
+          <li>協力会社がGS加入済（提出履歴あり）</li>
           <li>現場から直接依頼の声かけが可能</li>
         </ul>
       </section>
 
-      <!-- 管理表（ダミー：別途作成可） -->
+      <!-- ===========================
+           【重要】必読項目です（2）
+         =========================== -->
       <section id="sec-important-2" class="section" tabindex="-1" aria-labelledby="sec-important-2-title">
         <h1 id="sec-important-2-title">管理表「安全書類確認状況」</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 書類提出対象業者の連絡先（ダミー） -->
+      <!-- ===========================
+           【重要】必読項目です（3）
+         =========================== -->
       <section id="sec-important-3" class="section" tabindex="-1" aria-labelledby="sec-important-3-title">
-        <h1 id="sec-important-3-title">書類提出対象業者の連絡先</h1>
+        <h1 id="sec-important-3-title">書類提出対象協力会社の連絡先</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- ■■■ 【必須】現場開始準備 ■■■ -->
-
-      <!-- 雛形Excel記入（ダミー） -->
+      <!-- ===========================
+           【必須】現場開始準備（1）
+         =========================== -->
       <section id="sec-prep-1" class="section" tabindex="-1" aria-labelledby="sec-prep-1-title">
         <h1 id="sec-prep-1-title">安全書類雛形Excel記入</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 「台帳作成通知」の掲示（強化版） -->
+      <!-- ===========================
+           【必須】現場開始準備（2）
+         =========================== -->
       <section id="sec-prep-2" class="section" tabindex="-1" aria-labelledby="sec-prep-2-title">
         <h1 id="sec-prep-2-title">「台帳作成通知」の掲示</h1>
 
-        <!-- 概要 -->
         <p class="lead">
-          再下請負契約が発生する場合、<strong>建設業法第14条の3第1項</strong>に基づく元請への届出が必要です。
-          周知のため、<strong>GSによる書面通知</strong>＋<strong>現場掲示</strong>の両方が必須です。
+          再下請負契約が発生する場合、建設業法第14条の3第1項に基づき元請への届出が必要です。
+          周知のため、GSによる書面通知＋現場掲示の両方が必須です。
         </p>
 
-        <div class="task-card">
-          <h2><i data-lucide="hard-hat"></i> 現場で対応</h2>
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
           <ul>
             <li>通知文を印刷し、指定位置に掲示</li>
-            <li>仮囲い（外側）＋詰所／休憩所の<strong>2か所</strong>に掲示</li>
+            <li>仮囲い（外側）＋詰所／休憩所の2か所に掲示</li>
           </ul>
         </div>
-
-        <div class="notice muted">
-          <div class="title"><i data-lucide="handshake"></i> 建築事務がサポート</div>
+        
+        <!-- 建築事務がサポート -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
           <div class="body">
             ・雛形Excelの提供／内容整合の確認<br>
             ・掲示場所の相談対応
           </div>
         </div>
 
-        <div class="notice danger" role="alert">
-          <div class="title"><i data-lucide="triangle-alert"></i> 注意</div>
-          <div class="body">書面通知はGSで送付済み。<strong>掲示が無いと法令要件を満たしません</strong>。</div>
+        <!-- 注意 -->
+        <div class="card card-r" role="alert">
+          <h3><i data-lucide="triangle-alert"></i> 注意</h3>
+          <p>書面通知はGSで送付済み。掲示が無いと法令要件を満たしません。</p>
         </div>
 
-        <h2>手順（ロング版）</h2>
+        <h3>手順（ロング版）</h3>
         <ol>
-          <li>【安全書類雛形】現場ごと → 右クリックで<strong>Excelアプリ</strong>で開く（ブラウザNG）</li>
+          <li>【安全書類雛形】現場ごと → 右クリックでExcelアプリで開く（ブラウザNG）</li>
           <li>シート「通知」を開き、オレンジ枠の内容を確認</li>
-          <li>掲示場所のサイズに合わせて<strong>2部印刷</strong>（標準A4）</li>
+          <li>掲示場所に合わせて2部印刷（A4）</li>
           <li>仮囲い（外側）・詰所／休憩所に掲示</li>
         </ol>
 
-        <div class="notice muted" role="note">
-          <div class="title"><i data-lucide="info"></i> 補足（掲示場所の推奨）</div>
+        <!-- 補足 -->
+        <div class="card card-g">
+          <h3><i data-lucide="info"></i> 補足（掲示場所の推奨）</h3>
           <div class="body">
-            ・<strong>仮囲い外側</strong>：通行人・検査員が確認しやすい<br>
-            ・<strong>詰所／休憩所</strong>：下請業者が確実に目にする
+            ・仮囲い外側：通行人・検査員が確認しやすい<br>
+            ・詰所／休憩所：下請協力会社が確実に目にする
           </div>
         </div>
-      </section>
 
-      <!-- 災防協規約（ダミー） -->
+      <!-- ===========================
+           【必須】現場開始準備（3）
+         =========================== -->
       <section id="sec-prep-3" class="section" tabindex="-1" aria-labelledby="sec-prep-3-title">
         <h1 id="sec-prep-3-title">災防協規約作成・綴じ込み</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- ■■■ 【必須】現場開始後 ■■■ -->
-
-      <!-- Teams確認（ダミー） -->
+      <!-- ===========================
+           【必須】現場開始後（1）
+         =========================== -->
       <section id="sec-after-1" class="section" tabindex="-1" aria-labelledby="sec-after-1-title">
         <h1 id="sec-after-1-title">Teams確認とリアクション</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 新規入場者アンケート提出（強化版） -->
+      <!-- ===========================
+           【必須】現場開始後（2）
+         =========================== -->
       <section id="sec-after-2" class="section" tabindex="-1" aria-labelledby="sec-after-2-title">
         <h1 id="sec-after-2-title">新規入場者アンケート提出</h1>
 
-        <!-- 概要 -->
         <p class="lead">
-          業者は入場前に<strong>作業員名簿の登録・提出</strong>が必要です。現場と事務の役割分担を明確化し、
-          運用上の例外・注意点まで含めて記載します。
+          協力会社は入場前に作業員名簿の登録・提出が必要です。
+          現場と事務の役割分担を明確化し、例外対応・注意点も含めて記載します。
         </p>
 
-        <div class="task-card">
-          <h2><i data-lucide="hard-hat"></i> 現場で対応</h2>
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
           <ul>
             <li>新規入場者教育の実施</li>
             <li>アンケートの誤記・読みにくい字の修正（必要に応じ代筆）</li>
-            <li>スキャンして提出（入場日ごと／業者混在OK／<strong>毎日推奨</strong>）</li>
+            <li>スキャンして提出（入場日ごと／協力会社混在OK／毎日推奨）</li>
           </ul>
         </div>
 
-        <div class="notice muted">
-          <div class="title"><i data-lucide="handshake"></i> 建築事務がサポート</div>
-          <div class="body">
-            ・名簿登録状況の確認／不備の是正依頼<br>
-            ・<strong>QR付アンケ</strong>の運用支援、直行直帰などの特別対応の相談受付
-          </div>
+        <!-- 建築事務がサポート -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
+          <ul>
+            <li>名簿登録状況の確認／不備の是正依頼</li>
+            <li>QR付アンケの運用支援、直行直帰などの特別対応</li>
+          </ul>
         </div>
 
-        <div class="notice danger" role="alert">
-          <div class="title"><i data-lucide="triangle-alert"></i> 注意</div>
-          <div class="body">
-            QR付アンケの「送り出し教育」欄は<strong>元請側で登録する項目</strong>のため、出力時は
-            「<strong>いいえ</strong>」表示で問題ありません。
-          </div>
+        <!-- 注意 -->
+        <div class="card card-r" role="alert">
+          <h3><i data-lucide="triangle-alert"></i> 注意</h3>
+          <p>
+            QR付アンケの「送り出し教育」欄は元請側で登録する項目です。
+            出力時は「いいえ」表示で問題ありません。
+          </p>
         </div>
 
-        <h2>手順（ロング版）</h2>
+        <h3>手順（ロング版）</h3>
         <ol>
-          <li>新規入場者教育を実施し、本人へ内容確認。相違があれば所属業者に<strong>従業員情報の更新</strong>を依頼</li>
-          <li>アンケートをスキャンして提出（入場日ごとに整理／業者混在OK）</li>
+          <li>新規入場者教育を実施 → 相違があれば協力会社へ従業員情報の更新依頼</li>
+          <li>アンケートをスキャンして提出（入場日ごと整理／混在OK）</li>
         </ol>
 
-        <h2>特別対応（例）</h2>
-        <p>直行直帰等でQR付アンケの出力・持参が困難な場合：</p>
+        <h3>特別対応（例）</h3>
+        <p>
+          直行直帰等でQR付アンケの出力・持参が困難な場合：
+        </p>
         <ul>
-          <li><strong>前日までにメール／FAXでアンケート送付</strong>などの柔軟対応可（現場判断でOK、事務も支援）</li>
+          <li>前日までにメール／FAXで送付するなど柔軟対応（現場判断OK）</li>
         </ul>
 
-        <h2>問い合わせ先（スキャン設定）</h2>
+        <h3>問い合わせ先（スキャン設定）</h3>
         <p>
-          複合機の初期設定は<strong>JGS㈱</strong>が実施します。スキャン設定の不具合や変更がある場合はJGS㈱へ連絡し、
-          併せて<strong>建築事務へ状況共有</strong>をお願いします。
+          複合機の初期設定はJGS㈱が実施。
+          スキャン設定の不具合・変更がある場合はJGS㈱へ連絡し、併せて建築事務へ共有をお願いします。
         </p>
       </section>
 
-      <!-- 業者指導（ダミー） -->
+      <!-- ===========================
+           【必須】現場開始後（3）
+         =========================== -->
       <section id="sec-after-3" class="section" tabindex="-1" aria-labelledby="sec-after-3-title">
-        <h1 id="sec-after-3-title">業者指導（災防協資料）</h1>
+        <h1 id="sec-after-3-title">協力会社指導（災防協資料）</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- ■■■ 現場対応・検査対策 ■■■ -->
-
-      <!-- 工期延長（ダミー） -->
+      <!-- ===========================
+           現場対応・検査対策（1）
+         =========================== -->
       <section id="sec-field-1" class="section" tabindex="-1" aria-labelledby="sec-field-1-title">
         <h1 id="sec-field-1-title">工期延長対応手順</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 社会保険未加入者（強化版） -->
+      <!-- ===========================
+           現場対応・検査対策（2）
+         =========================== -->
       <section id="sec-field-2" class="section" tabindex="-1" aria-labelledby="sec-field-2-title">
         <h1 id="sec-field-2-title">社会保険未加入者</h1>
 
-        <!-- 概要（前提） -->
         <p class="lead">
-          作業員の社会保険加入は<strong>法令上の義務</strong>です。未加入者は原則入場不可で、状況によっては行政指導の対象となります。
-          ここでは検査での指摘を避けるための実務対応を整理します。
+          作業員の社会保険加入は法令で義務付けられています。
+          未加入者は原則入場不可で、状況によっては行政指導の対象となります。
+          検査時の指摘を避けるための実務ポイントを整理します。
         </p>
 
-        <div class="task-card">
-          <h2><i data-lucide="hard-hat"></i> 現場で対応</h2>
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
           <ul>
-            <li>入場予定者の加入状況を<strong>名簿で確認</strong></li>
-            <li>未加入の場合は所属業者へ<strong>是正依頼を促す</strong></li>
-            <li>掲示物・資料配布で<strong>加入推進を周知</strong></li>
-            <li>検査時は「<strong>是正中／指導中</strong>」である旨を説明</li>
+            <li>入場予定者の加入状況を名簿で確認</li>
+            <li>未加入の場合は所属協力会社へ是正依頼を促す</li>
+            <li>掲示物・資料配布で加入推進を周知</li>
+            <li>検査時は「是正中／指導中」である旨を説明</li>
           </ul>
         </div>
 
-        <div class="notice muted">
-          <div class="title"><i data-lucide="handshake"></i> 建築事務がサポート</div>
-          <div class="body">
-            ・加入状況更新の依頼送付／名簿情報の確認・是正管理<br>
-            ・加入促進の資料提供（掲示・配布）
-          </div>
+        <!-- 建築事務がサポート -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
+          <ul>
+            <li>加入状況更新の依頼送付／名簿情報の確認・是正管理</li>
+            <li>加入促進の資料提供（掲示・配布）</li>
+          </ul>
         </div>
 
-        <div class="notice danger" role="alert">
-          <div class="title"><i data-lucide="triangle-alert"></i> 注意</div>
-          <div class="body">法令上の義務のため、<strong>未加入作業員は入場不可</strong>です。</div>
+        <!-- 注意 -->
+        <div class="card card-r" role="alert">
+          <h3><i data-lucide="triangle-alert"></i> 注意</h3>
+          <p>法令上の義務のため、未加入作業員は入場不可です。</p>
         </div>
 
-        <h2>検査対応（背景）</h2>
+
+        <h3>検査対応（背景）</h3>
         <p>
-          名簿で加入状況を確認されるため、未加入が残っていると指摘対象になります。
-          次の取り組みで、是正完了までの間の指摘回避につながった事例があります。
+          名簿確認の際に未加入者が残っていると指摘の対象になります。
+          ただし次のような取り組みにより「指導中」として扱われ、指摘回避できた事例があります。
         </p>
 
-        <h2>指摘回避の実例</h2>
+        <h3>指摘回避の実例</h3>
         <ul>
-          <li>「<strong>本社にて対応・指導中</strong>」である旨を説明する</li>
-          <li>国交省ガイドライン等の<strong>加入促進資料の掲示・配布</strong>を提示する</li>
+          <li>「本社にて対応・指導中」と説明し是正を示す</li>
+          <li>国交省ガイドライン等の加入促進資料の掲示・配布を提示</li>
         </ul>
       </section>
 
-      <!-- 現場代理人の入場日（ダミー） -->
+      <!-- ===========================
+           現場対応・検査対策（3）
+         =========================== -->
       <section id="sec-field-3" class="section" tabindex="-1" aria-labelledby="sec-field-3-title">
         <h1 id="sec-field-3-title">現場代理人の入場日</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 在留カード（ダミー） -->
+      <!-- ===========================
+           現場対応・検査対策（4）
+         =========================== -->
       <section id="sec-field-4" class="section" tabindex="-1" aria-labelledby="sec-field-4-title">
         <h1 id="sec-field-4-title">在留カードの管理</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- 専任技術者証明（ダミー） -->
+      <!-- ===========================
+           現場対応・検査対策（5）
+         =========================== -->
       <section id="sec-field-5" class="section" tabindex="-1" aria-labelledby="sec-field-5-title">
         <h1 id="sec-field-5-title">専任技術者証明書類</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- ポスターでアピール（ダミー） -->
+      <!-- ===========================
+           現場対応・検査対策（6）
+         =========================== -->
       <section id="sec-field-6" class="section" tabindex="-1" aria-labelledby="sec-field-6-title">
         <h1 id="sec-field-6-title">ポスターでアピール</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- ■■■ お役立ち・Tips ■■■ -->
-
-      <!-- iPad閲覧（ダミー） -->
+      <!-- ===========================
+           お役立ち・Tips（1）
+         =========================== -->
       <section id="sec-tips-1" class="section" tabindex="-1" aria-labelledby="sec-tips-1-title">
         <h1 id="sec-tips-1-title">iPadでグリーンサイト閲覧</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- Edge パスワード削除（先頭に概要を追加） -->
+      <!-- ===========================
+           お役立ち・Tips（2）
+         =========================== -->
       <section id="sec-tips-2" class="section" tabindex="-1" aria-labelledby="sec-tips-2-title">
         <h1 id="sec-tips-2-title">Edge記憶のパスワード削除</h1>
 
         <p class="lead">
-          Edge に保存された<strong>不要なログイン情報（ID/パスワード）</strong>を削除し、誤ログインを防ぐ手順です。
+          Edge に保存された不要なログイン情報（ID/パスワード）を削除して、
+          誤ログインを防ぐための手順です。
         </p>
 
-        <h2>① この業務の目的</h2>
-        <p class="lead">不要になった Edge のパスワードを削除し、誤アカウントでのログインを防ぐための操作です。</p>
+        <h3>① この業務の目的</h3>
+        <p class="lead">不要な保存パスワードを削除し、誤アカウントでのログインを防ぐための操作です。</p>
 
-        <h2>② 手順</h2>
+        <h3>② 手順</h3>
         <ol>
-          <li><strong>設定を開く</strong>：右上メニュー →「設定」</li>
-          <li><strong>パスワード管理</strong>：「パスワードとオートフィル」→「Microsoft パスワードマネージャー」</li>
-          <li><strong>対象のIDを選択</strong>：例）グリーンサイト＝ <code>kensetsu-site.com</code></li>
-          <li><strong>Windowsセキュリティ認証</strong>：PCログインパスワードを入力</li>
-          <li><strong>削除</strong></li>
+          <li>右上メニュー →「設定」を開く</li>
+          <li>「パスワードとオートフィル」→「Microsoft パスワードマネージャー」</li>
+          <li>対象のIDを選択（例：グリーンサイト＝<code>kensetsu-site.com</code>）</li>
+          <li>Windowsセキュリティ認証（PCログインパスワード）を入力</li>
+          <li>削除</li>
         </ol>
 
-        <div class="notice muted" role="note" aria-label="補足">
-          <div class="title">【補足】よくある質問</div>
-          <div class="body">
-            ・保存パスワードが多いほど誤ログインが起きやすくなります。<br>
-            ・共有利用の現場PCでは、定期的な整理がおすすめです。
-          </div>
-        </div>
+        <!-- 補足 -->
+        <article class="notice muted" role="note">
+          <h3>【補足】よくある質問</h3>
+          <ul>
+            <li>保存パスワードが多いほど誤ログインが起きやすくなります。</li>
+            <li>共有PCでは、定期的な整理がおすすめです。</li>
+          </ul>
+        </article>
       </section>
 
-      <!-- Dropboxスター（ダミー） -->
+      <!-- ===========================
+           お役立ち・Tips（3）
+         =========================== -->
       <section id="sec-tips-3" class="section" tabindex="-1" aria-labelledby="sec-tips-3-title">
         <h1 id="sec-tips-3-title">Dropbox「スター」活用</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-      <!-- AI活用（ダミー） -->
+      <!-- ===========================
+           お役立ち・Tips（4）
+         =========================== -->
       <section id="sec-tips-4" class="section" tabindex="-1" aria-labelledby="sec-tips-4-title">
         <h1 id="sec-tips-4-title">AI活用のススメ</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
-    </main>
+</main>
+    <!-- /#content -->
   </div>
+  <!-- /#app.layout -->
 
-  <!-- ギャラリーモーダル -->
+  <!-- ===========================
+       ギャラリー用モーダル
+     =========================== -->
   <div id="galleryModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="画像プレビュー">
-    <div class="modal-dialog">
+    <div class="modal-dialog" role="document">
       <button class="close" type="button" aria-label="閉じる（Esc）">✕</button>
       <div class="controls">
         <button class="prev" type="button" aria-label="前の画像">◀</button>
         <button class="next" type="button" aria-label="次の画像">▶</button>
       </div>
-      <img id="modalImg" src="" alt="">
+      <img id="modalImg" src="" alt="" />
       <div class="caption" id="modalCap"></div>
     </div>
   </div>
 
+  <!-- ===========================
+       スクリプト群
+     =========================== -->
   <script>
     // ========== TOC：現在位置をハイライト ==========
-    (function(){
+    (function () {
       const tocLinks = Array.from(document.querySelectorAll('#tocNav a'));
       const sections = tocLinks
         .map(a => document.querySelector(a.getAttribute('href')))
         .filter(Boolean);
 
-      const byId = new Map(sections.map(s => [ '#' + s.id, s ]));
+      const byId = new Map(sections.map(s => ['#' + s.id, s]));
 
       const io = new IntersectionObserver((entries) => {
         entries.forEach(e => {
-          if(e.isIntersecting){
+          if (e.isIntersecting) {
             const id = '#' + e.target.id;
             tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
             const link = tocLinks.find(a => a.getAttribute('href') === id);
-            if(link){
+            if (link) {
               const details = link.closest('details.chapter');
-              if(details && !details.open) details.open = true;
+              if (details && !details.open) details.open = true;
             }
           }
         });
-      }, {root: null, rootMargin: '0px 0px -70% 0px', threshold: 0.1});
+      }, { root: null, rootMargin: '0px 0px -70% 0px', threshold: 0.1 });
+
       sections.forEach(s => io.observe(s));
 
       tocLinks.forEach(a => {
         a.addEventListener('click', (ev) => {
           const target = byId.get(a.getAttribute('href'));
-          if(!target) return;
+          if (!target) return;
           ev.preventDefault();
-          target.scrollIntoView({behavior:'smooth', block:'start'});
-          target.focus({preventScroll:true});
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          target.focus({ preventScroll: true });
           const details = a.closest('details.chapter');
-          if(details && !details.open) details.open = true;
+          if (details && !details.open) details.open = true;
           tocLinks.forEach(x => x.classList.toggle('active', x === a));
           history.pushState(null, '', a.getAttribute('href'));
         });
       });
     })();
+  </script>
 
+  <script>
     // ========== 本文検索（右カラムのみ） ==========
-    (function(){
+    (function () {
       const content = document.getElementById('content');
       const form = document.getElementById('searchForm');
       const input = document.getElementById('searchInput');
@@ -912,10 +1168,10 @@
       let marks = [];
       let index = -1;
 
-      function clearHighlights(){
+      function clearHighlights() {
         marks.forEach(m => {
           const parent = m.parentNode;
-          if(!parent) return;
+          if (!parent) return;
           parent.replaceChild(document.createTextNode(m.textContent), m);
           parent.normalize();
         });
@@ -924,82 +1180,104 @@
         meta.textContent = '0件';
       }
 
-      function highlight(term){
+      function highlight(term) {
         clearHighlights();
-        if(!term) return;
+        if (!term) return;
 
         const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, {
-          acceptNode(node){
-            if(!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-            if(node.parentElement && (node.parentElement.closest('.modal') || node.parentElement.tagName === 'SCRIPT' || node.parentElement.tagName === 'STYLE')) {
+          acceptNode(node) {
+            if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+            if (
+              node.parentElement &&
+              (node.parentElement.closest('.modal') ||
+                node.parentElement.tagName === 'SCRIPT' ||
+                node.parentElement.tagName === 'STYLE')
+            ) {
               return NodeFilter.FILTER_REJECT;
             }
             return NodeFilter.FILTER_ACCEPT;
           }
         });
-        const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+
+        const esc = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(esc, 'gi');
         const toWrap = [];
 
-        while(walker.nextNode()){
+        while (walker.nextNode()) {
           const node = walker.currentNode;
           const text = node.nodeValue;
-          if(re.test(text)){ toWrap.push(node); }
+          if (re.test(text)) toWrap.push(node);
           re.lastIndex = 0;
         }
 
         toWrap.forEach(node => {
           const frag = document.createDocumentFragment();
-          const parts = node.nodeValue.split(new RegExp(`(${term.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')})`, 'gi'));
-          parts.forEach((part,i) => {
-            if(i % 2 === 1){
+          const parts = node.nodeValue.split(new RegExp(`(${esc})`, 'gi'));
+          parts.forEach((part, i) => {
+            if (i % 2 === 1) {
               const mark = document.createElement('mark');
               mark.className = 'hl';
               mark.textContent = part;
               frag.appendChild(mark);
               marks.push(mark);
-            }else{
+            } else {
               frag.appendChild(document.createTextNode(part));
             }
           });
           node.parentNode.replaceChild(frag, node);
         });
 
-        if(marks.length){
+        if (marks.length) {
           index = 0;
           go(index);
         }
         meta.textContent = `${marks.length}件`;
       }
 
-      function go(i){
-        if(!marks.length) return;
+      function go(i) {
+        if (!marks.length) return;
         marks.forEach(m => m.classList.remove('current'));
         const target = marks[i];
         target.classList.add('current');
-        target.scrollIntoView({behavior:'smooth', block:'center', inline:'nearest'});
+        target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
       }
 
-      function next(){ if(!marks.length) return; index = (index + 1) % marks.length; go(index); }
-      function prev(){ if(!marks.length) return; index = (index - 1 + marks.length) % marks.length; go(index); }
+      function next() {
+        if (!marks.length) return;
+        index = (index + 1) % marks.length;
+        go(index);
+      }
+
+      function prev() {
+        if (!marks.length) return;
+        index = (index - 1 + marks.length) % marks.length;
+        go(index);
+      }
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const term = input.value.trim();
-        if(term !== currentTerm){
+        if (term !== currentTerm) {
           currentTerm = term;
           highlight(term);
-        }else{
+        } else {
           next();
         }
       });
+
       input.addEventListener('keydown', (e) => {
-        if(e.key === 'Enter'){
+        if (e.key === 'Enter') {
           e.preventDefault();
           const term = input.value.trim();
-          if(term !== currentTerm){ currentTerm = term; highlight(term); }
-          else{ next(); }
+          if (term !== currentTerm) {
+            currentTerm = term;
+            highlight(term);
+          } else {
+            next();
+          }
         }
       });
+
       nextBtn.addEventListener('click', next);
       prevBtn.addEventListener('click', prev);
 
@@ -1013,9 +1291,11 @@
         }, 240);
       });
     })();
+  </script>
 
+  <script>
     // ========== 画像ギャラリーモーダル ==========
-    (function(){
+    (function () {
       const modal = document.getElementById('galleryModal');
       const img = document.getElementById('modalImg');
       const cap = document.getElementById('modalCap');
@@ -1026,7 +1306,7 @@
       const thumbs = Array.from(document.querySelectorAll('.gallery .thumb'));
       let i = -1;
 
-      function openAt(idx){
+      function openAt(idx) {
         i = idx;
         const a = thumbs[i];
         const full = a.getAttribute('data-full');
@@ -1034,39 +1314,56 @@
         img.src = full;
         img.alt = c;
         cap.textContent = c;
-        modal.setAttribute('aria-hidden','false');
+        modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         btnClose.focus();
       }
-      function close(){
-        modal.setAttribute('aria-hidden','true');
+
+      function close() {
+        modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
         img.src = '';
         i = -1;
       }
-      function prev(){ if(i<0) return; i = (i - 1 + thumbs.length) % thumbs.length; openAt(i); }
-      function next(){ if(i<0) return; i = (i + 1) % thumbs.length; openAt(i); }
+
+      function prev() {
+        if (i < 0) return;
+        i = (i - 1 + thumbs.length) % thumbs.length;
+        openAt(i);
+      }
+
+      function next() {
+        if (i < 0) return;
+        i = (i + 1) % thumbs.length;
+        openAt(i);
+      }
 
       thumbs.forEach((a, idx) => {
-        a.addEventListener('click', (e) => { e.preventDefault(); openAt(idx); });
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          openAt(idx);
+        });
       });
-      btnClose.addEventListener('click', close);
-      btnPrev.addEventListener('click', (e)=>{ e.stopPropagation(); prev(); });
-      btnNext.addEventListener('click', (e)=>{ e.stopPropagation(); next(); });
 
-      modal.addEventListener('click', (e) => { if(e.target === modal) close(); });
+      btnClose.addEventListener('click', close);
+      btnPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+      btnNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+
       window.addEventListener('keydown', (e) => {
-        if(modal.getAttribute('aria-hidden') === 'true') return;
-        if(e.key === 'Escape') close();
-        if(e.key === 'ArrowLeft') prev();
-        if(e.key === 'ArrowRight') next();
+        if (modal.getAttribute('aria-hidden') === 'true') return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
       });
     })();
   </script>
 
   <!-- Lucide を描画（DOM構築後） -->
   <script>
-    try { lucide.createIcons(); } catch(e) {}
+    try { lucide.createIcons(); } catch (e) {}
   </script>
+
 </body>
 </html>
