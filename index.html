@@ -34,8 +34,8 @@
   --task-border: #fde68a;
   --task-accent: #f59e0b;
 
-  --link: #2563eb;
-  --link-visited: #7c3aed;
+  --link: #1e40af;
+  --link-visited: #1e40af;
 
   --gallery-backdrop: rgba(0,0,0,0.75);
 
@@ -510,17 +510,16 @@ th,td{
 
           <h3>ここだけは「必ず」一度目を通してください</h3>
           <p>初回からすべて読む必要はありませんが、以下だけは事前確認をお願いします。</p>
-
           <ul>
-            <li>建築事務サポート（4項目）</li>
             <li>
               現場所長・現場員へお願いしたいこと
               <ul>
-                <li>【重要】かならずご確認ください（3項目）</li>
+                <li>【重要】必読項目です（4項目）</li>
                 <li>【必須】現場開始準備（3項目）</li>
                 <li>【必須】現場開始後（3項目）</li>
               </ul>
             </li>
+            <li>建築事務サポート（4項目）</li>
           </ul>
 
           <h3>その他の項目</h3>
@@ -581,8 +580,8 @@ th,td{
     <ul>
       <li><a href="#sec-intro-0">建築事務サポートの前提</a></li>
       <li><a href="#sec-important-1">早期契約にご協力ください</a></li>
-      <li><a href="#sec-important-2">管理表「安全書類確認状況」</a></li>
-      <li><a href="#sec-important-3">書類提出対象協力会社の連絡先</a></li>
+      <li><a href="#sec-important-2">契約・書類提出状況の確認</a></li>
+      <li><a href="#sec-important-3">協力会社の連絡先情報共有</a></li>
     </ul>
   </details>
 
@@ -729,8 +728,8 @@ th,td{
           <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
           <ul>
             <li>協力会社との契約手続きを早めに開始</li>
-            <li>注文書送付（契約完了）を確認</li>
-            <li>どうしても契約前GS招待が必要な場合は、積算購買部・建築事務へ事前相談</li>
+            <li>「経理の注文書送付のタイミングで契約完了扱い」ということを認識</li>
+            <li>どうしても契約前に書類が必要な場合は、積算購買部・建築事務へ事前相談</li>
           </ul>
         </div>
 
@@ -745,10 +744,10 @@ th,td{
 
         <!-- 注意（赤のカード） -->
         <div class="card card-r" role="alert">
-          <h3><i data-lucide="triangle-alert"></i> 未契約協力会社には依頼不可</h3>
+          <h3><i data-lucide="triangle-alert"></i>未契約協力会社には依頼不可</h3>
           <p>
-            <b>契約完了＝協力会社へ注文書が送付された状態</b><br>
-            未契約GS招待は、積算購買部・経理課・協力会社を巻き込んだ手戻りが発生するケースがあります。<br>
+            <b>契約未完了＝協力会社へ注文書が未送付の状態</b>で書類提出依頼すると、<br>
+            現場所長・積算購買部・経理課・協力会社を巻き込む手戻りが発生するケースがあります。<br>
             そのため、原則として「未契約の場合は書類提出依頼不可」としています。
           </p>
         </div>
@@ -766,16 +765,110 @@ th,td{
            【重要】必読項目です（2）
          =========================== -->
       <section id="sec-important-2" class="section" tabindex="-1" aria-labelledby="sec-important-2-title">
-        <h1 id="sec-important-2-title">管理表「安全書類確認状況」</h1>
-        <p class="lead">この項目は準備中です。順次更新していきます。</p>
+        <h1 id="sec-important-2-title">契約・書類提出状況の確認</h1>
+
+        <p class="lead">
+          協力会社との契約・書類提出依頼状況は、管理表「安全書類確認状況」をご確認ください。
+        </p>
+
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
+          <ul>
+            <li>管理表「安全書類確認状況」を確認</li>
+              <ul>
+                <li>工期開始日と、現場入場予定日との整合性</li>
+                <li>進捗状況（注文書送付、書類提出依頼、書類受領）</li>
+              </ul>
+            <li>契約予定の協力会社名がない場合は、積算購買部へ連絡</li>
+          </ul>
+        </div>
+
+        <!-- 建築事務がサポート -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
+          <ul>
+            <li>「注文書送付日」項目へ日付が記入され次第、書類提出依頼を行う</li>
+            <li>書類の進捗状況を管理表へ反映</li>
+            <li>日程矛盾の有無を確認し、必要に応じて調整</li>
+          </ul>
+        </div>
+
+        <!-- 注意（赤のカード） -->
+        <div class="card card-r" role="alert">
+          <h3><i data-lucide="triangle-alert"></i> 契約日程と入場予定日の整合性チェック</h3>
+          <p>
+            <b>契約日 ➡ 工期開始日 ➡ 現場入場日 が正しい順番です。</b><br>
+            現場入場（乗り込み）予定日が、納期（工期）より前倒しになる場合は<br>
+            積算購買部または建築事務へお知らせください。
+          </p>
+        </div>
+
+        <!-- 補足 -->
+        <div class="card card-g">
+          <h3><i data-lucide="info"></i> 補足（提出期限と催促）</h3>
+          <div class="body">
+          協力会社へ「提出期限：現場入場の1ヵ月前まで」と伝えています。<br>
+          書類の提出催促につきまして、直接協力会社へお声かけいただくか、建築事務へお知らせください。
+          </div>
+        </div>
+
+        <h3>管理表「安全書類確認状況」の場所</h3>
+        <ul>
+          <li>
+          <a href="https://komatagumi-my.sharepoint.com/:x:/g/personal/suzuki-s_komatagumi_co_jp/IQALAFsQLGAtTI4auWLJ_JVUAac59zLvfaE7HTHB_f9GKyE?e=jbaMAo" target="_blank">
+            こちらからアクセスできます。
+          </a>
+          </li>
+          <li>Teams現場チームのタブに、現場シートへのリンクを設置しています。</li>
+        </ul>
+
       </section>
 
       <!-- ===========================
            【重要】必読項目です（3）
          =========================== -->
       <section id="sec-important-3" class="section" tabindex="-1" aria-labelledby="sec-important-3-title">
-        <h1 id="sec-important-3-title">書類提出対象協力会社の連絡先</h1>
-        <p class="lead">この項目は準備中です。順次更新していきます。</p>
+        <h1 id="sec-important-3-title">協力会社の連絡先情報を共有してください</h1>
+
+        <p class="lead">
+          安全書類（グリーンファイル）の提出依頼を行う際、業者の連絡先不明により対応が遅れる場合があります。
+        </p>
+
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
+          <ul>
+            <li>以下を建築事務へ共有</li>
+              <ul>
+                <li>業者のグリーンサイト加入状況（原則として加入必須）</li>
+                <li>書類担当者の情報（氏名・電話番号・メールアドレス）<br>
+                └ 書類担当者不明の場合は、営業・現場担当者でもかまいません。</li>
+              </ul>
+            <li>上記について、資料を配布</li>
+          </ul>
+        </div>
+
+        <!-- 補足 -->
+        <div class="card card-g">
+          <h3><i data-lucide="info"></i> 補足（資料配布）</h3>
+          <div class="body">
+          初めてグリーンサイトで書類提出を行う業者は、<br>
+          事前に小俣組を「オーナー企業登録」していただく必要があります。<br>
+          手順を資料にまとめたので、保存して安全書類提出対象の業者へお渡しください。
+          </div>
+        </div>
+
+        <h3>資料の場所</h3>
+        <ul>
+          <li>
+          <a href="https://komatagumi.sharepoint.com/:b:/s/msteams_0eda95/IQDK46NpT6gtQKR4FP_sfeZGAfcdys-1YJlaDEYCHH0Y-MQ?e=iAxAWq" target="_blank">
+            こちらからアクセスできます。
+          </a>
+          </li>
+          <li>資料：【ご対応依頼】グリーンサイト「オーナー企業登録」.pdf</li>
+        </ul>
+
       </section>
 
       <!-- ===========================
@@ -793,8 +886,8 @@ th,td{
         <h1 id="sec-prep-2-title">「台帳作成通知」の掲示</h1>
 
         <p class="lead">
-          再下請負契約が発生する場合、建設業法第14条の3第1項に基づき元請への届出が必要です。
-          周知のため、GSによる書面通知＋現場掲示の両方が必須です。
+          "再下請負契約が発生する際は、建設業法第14条の3第1項により元請への事前届出が義務"<br>
+          上記について、業者へ周知するため、GSによる書面通知＋現場掲示の両方が必須です。
         </p>
 
         <!-- 現場で対応 -->
