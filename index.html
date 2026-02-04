@@ -60,7 +60,37 @@ body{
 
 a{ color:var(--link); }
 a:visited{ color:var(--link-visited); }
-h1,h3,h3{ line-height:1.3; }
+h1,h2,h3{ line-height:1.3; }
+
+/* --- リード文（共通） --------------------------------- */
+.lead{
+  font-size: 16px;          /* 本文14pxに対して+2px */
+  line-height: 1.9;         /* 長文に配慮して広め */
+  color: var(--muted);      /* 強調しすぎない落ち着いた色 */
+  margin: 8px 0 14px;       /* 見出しとの間合い調整 */
+}
+
+/* セクション見出し直下では少しだけ余白を広めに */
+.section > .lead:first-of-type{
+  margin-top: 6px;
+  margin-bottom: 18px;
+}
+
+/* モバイルでは可読性優先で少し大きく */
+@media (max-width: 980px){
+  .lead{ font-size: 17px; }
+}
+
+/* 赤カード内のリード（注意喚起を保ちつつ読みやすく） */
+.card-r .lead{
+  color: #b91c1c;       /* notice-red-b より少し深めの赤 */
+  font-weight: 600;
+}
+
+/* グレーカード内のリード（情報） */
+.card-g .lead{
+  color: #374151;       /* muted より一段濃い */
+}
 
 /* =========================================================
    03：ヘッダー
@@ -541,20 +571,9 @@ th,td{
     <div class="meta" id="searchMeta" aria-live="polite">0件</div>
   </form>
 </div>
-      </section>
 
       <!-- 目次本体（アンカーはJS依存のためIDを維持） -->
 <nav class="toc" id="tocNav" aria-label="章と項目の一覧">
-
-  <details class="chapter" open>
-    <summary>建築事務サポート</summary>
-    <ul>
-      <li><a href="#sec-support-1">【1】書類の提出依頼</a></li>
-      <li><a href="#sec-support-2">【2】新規入場者名簿</a></li>
-      <li><a href="#sec-support-3">【3】施工体制台帳</a></li>
-      <li><a href="#sec-support-4">【4】デジタルサイネージ</a></li>
-    </ul>
-  </details>
 
   <details class="chapter">
     <summary>【重要】必読項目です</summary>
@@ -580,6 +599,16 @@ th,td{
       <li><a href="#sec-after-1">Teams確認とリアクション</a></li>
       <li><a href="#sec-after-2">新規入場者アンケート提出</a></li>
       <li><a href="#sec-after-3">協力会社指導（災防協資料）</a></li>
+    </ul>
+  </details>
+
+  <details class="chapter" open>
+    <summary>建築事務によるサポート</summary>
+    <ul>
+      <li><a href="#sec-support-1">【1】書類の提出依頼</a></li>
+      <li><a href="#sec-support-2">【2】新規入場者名簿</a></li>
+      <li><a href="#sec-support-3">【3】施工体制台帳</a></li>
+      <li><a href="#sec-support-4">【4】デジタルサイネージ</a></li>
     </ul>
   </details>
 
@@ -618,119 +647,6 @@ th,td{
     <main id="content" role="main">
 
       <!-- ===========================
-           建築事務サポート【1】
-         =========================== -->
-      <section id="sec-support-1" class="section" tabindex="-1" aria-labelledby="sec-support-1-title">
-        <h1 id="sec-support-1-title">安全書類（グリーンファイル）の提出依頼</h1>
-
-        <p class="lead">
-          【建築事務によるサポート内容】協力会社へ安全書類（グリーンファイル）について、提出依頼・受領・初回チェックを行います。
-        </p>
-
-        <!-- 現場で対応 -->
-        <div class="card card-y">
-          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
-          <ul>
-            <li>積算購買へ見積書を提出（契約開始）</li>
-            <li>経理の注文書送付のタイミングで契約完了扱いということを認識</li>
-            <li>協力会社との契約・書類提出状況は管理表「安全書類確認状況」で確認</li>
-            <li>書類未提出の協力会社へ直接声かけ or 建築事務へ催促依頼</li>
-          </ul>
-        </div>
-
-        <!-- 建築事務がサポート -->
-        <div class="card card-g">
-          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
-          <ul>
-            <li>契約完了を確認し、GSで企業招待＋提出依頼メール送付、適宜電話連絡</li>
-            <li>提出物の受領 → 初回チェック → 不備修正依頼</li>
-            <li>書類提出・不備状況をExcel管理表へまとめ（現場へ共有可）</li>
-            <li>書類提出状況を管理表「安全書類確認状況」に反映</li>
-          </ul>
-        </div>
-
-        <!-- 注意（元の配色を維持） -->
-        <div class="card card-r">
-          <h3><i data-lucide="triangle-alert"></i> 注意</h3>
-          <div class="body">
-            未契約（＝注文書未送付）の協力会社には依頼不可<br>
-            日程矛盾・注文書再作成など大きな手戻りが生じるため　※詳細はこちら
-          </div>
-        </div>
-
-        <!-- 全体の流れ -->
-        <h3>全体の流れ</h3>
-        <ol>
-          <li>契約開始（現場所長）　　　：積算購買へ見積書を提出し、契約手続きを開始</li>
-          <li>協力会社追加（積算購買部）：管理表「安全書類確認状況」に協力会社追加</li>
-          <li>注文書送付（経理課）　　　：協力会社と現場所長へ注文書送付 → 契約完了</li>
-          <li>提出依頼（建築事務）　　　：GSで企業招待＋提出依頼 → 受領・初回チェック・不備修正依頼</li>
-        </ol>
-
-        <!-- 期限と確認 -->
-        <h3>提出期限・状況確認</h3>
-        <ul>
-          <li>提出期限の目安：入場の1か月前まで</li>
-          <li>最新の依頼・提出状況：管理表「安全書類確認状況」で確認</li>
-        </ul>
-
-        <!-- 催促 -->
-        <h3>提出を急ぎたい場合（催促）</h3>
-        <ul>
-          <li>現場から直接連絡（電話／Teams）</li>
-          <li>建築事務へ共有 → 事務側からも催促・調整を実施</li>
-        </ul>
-
-        <h3>催促の例文（コピペ可）</h3>
-        <blockquote>
-          「◯◯工事の安全書類につきまして、提出が未確認です。<br>
-          入場は◯/◯予定のため、本日中のご対応をお願いいたします。」
-        </blockquote>
-
-        <!-- FAQ -->
-        <h3>よくある質問（FAQ）</h3>
-        <p>Q. 契約前でも書類依頼したい場合？</p>
-        <p>A. 以下すべてを満たす場合、例外的に可能：</p>
-        <ul>
-          <li>入場日と契約日程に矛盾がない（<em>注文日 → 工期開始 → 入場日</em>の順が保たれる）</li>
-          <li>入場日の前倒しの可能性がない</li>
-          <li>協力会社がGS加入済（別現場で提出履歴あり）</li>
-          <li>現場から直接の声かけが可能</li>
-        </ul>
-
-        <!-- 補足 -->
-        <h3>補足（背景）</h3>
-        <p>
-          GS運用は契約と連動します。契約未整備のまま依頼すると、入力済み書類の作り直しや注文書の再発行が発生します。
-          そのため未契約協力会社への依頼は原則不可としています。
-        </p>
-      </section>
-
-      <!-- ===========================
-           建築事務サポート【2】
-         =========================== -->
-      <section id="sec-support-2" class="section" tabindex="-1" aria-labelledby="sec-support-2-title">
-        <h1 id="sec-support-2-title">新規入場者名簿</h1>
-        <p class="lead">この項目は準備中です。順次更新していきます。</p>
-      </section>
-
-      <!-- ===========================
-           建築事務サポート【3】
-         =========================== -->
-      <section id="sec-support-3" class="section" tabindex="-1" aria-labelledby="sec-support-3-title">
-        <h1 id="sec-support-3-title">施工体制台帳</h1>
-        <p class="lead">この項目は準備中です。順次更新していきます。</p>
-      </section>
-
-      <!-- ===========================
-           建築事務サポート【4】
-         =========================== -->
-      <section id="sec-support-4" class="section" tabindex="-1" aria-labelledby="sec-support-4-title">
-        <h1 id="sec-support-4-title">デジタルサイネージ</h1>
-        <p class="lead">この項目は準備中です。順次更新していきます。</p>
-      </section>
-
-<!-- ===========================
            【重要】必読項目です（1）
          =========================== -->
       <section id="sec-important-1" class="section" tabindex="-1" aria-labelledby="sec-important-1-title">
@@ -937,6 +853,119 @@ th,td{
          =========================== -->
       <section id="sec-after-3" class="section" tabindex="-1" aria-labelledby="sec-after-3-title">
         <h1 id="sec-after-3-title">協力会社指導（災防協資料）</h1>
+        <p class="lead">この項目は準備中です。順次更新していきます。</p>
+      </section>
+
+      <!-- ===========================
+           建築事務サポート【1】
+         =========================== -->
+      <section id="sec-support-1" class="section" tabindex="-1" aria-labelledby="sec-support-1-title">
+        <h1 id="sec-support-1-title">安全書類（グリーンファイル）の提出依頼</h1>
+
+        <p class="lead">
+        協力会社へ安全書類（グリーンファイル）について、提出依頼・受領・初回チェックを行います。
+        </p>
+
+        <!-- 現場で対応 -->
+        <div class="card card-y">
+          <h3><i data-lucide="hard-hat"></i> 現場で対応</h3>
+          <ul>
+            <li>積算購買へ見積書を提出（契約開始）</li>
+            <li>経理の注文書送付のタイミングで契約完了扱いということを認識</li>
+            <li>協力会社との契約・書類提出状況は管理表「安全書類確認状況」で確認</li>
+            <li>書類未提出の協力会社へ直接声かけ or 建築事務へ催促依頼</li>
+          </ul>
+        </div>
+
+        <!-- 建築事務がサポート -->
+        <div class="card card-g">
+          <h3><i data-lucide="handshake"></i> 建築事務がサポート</h3>
+          <ul>
+            <li>契約完了を確認し、GSで企業招待＋提出依頼メール送付、適宜電話連絡</li>
+            <li>提出物の受領 → 初回チェック → 不備修正依頼</li>
+            <li>書類提出・不備状況をExcel管理表へまとめ（現場へ共有可）</li>
+            <li>書類提出状況を管理表「安全書類確認状況」に反映</li>
+          </ul>
+        </div>
+
+        <!-- 注意（元の配色を維持） -->
+        <div class="card card-r">
+          <h3><i data-lucide="triangle-alert"></i> 注意</h3>
+          <div class="body">
+            未契約（＝注文書未送付）の協力会社には依頼不可<br>
+            日程矛盾・注文書再作成など大きな手戻りが生じるため　※詳細はこちら
+          </div>
+        </div>
+
+        <!-- 全体の流れ -->
+        <h3>全体の流れ</h3>
+        <ol>
+          <li>契約開始（現場所長）　　　：積算購買へ見積書を提出し、契約手続きを開始</li>
+          <li>協力会社追加（積算購買部）：管理表「安全書類確認状況」に協力会社追加</li>
+          <li>注文書送付（経理課）　　　：協力会社と現場所長へ注文書送付 → 契約完了</li>
+          <li>提出依頼（建築事務）　　　：GSで企業招待＋提出依頼 → 受領・初回チェック・不備修正依頼</li>
+        </ol>
+
+        <!-- 期限と確認 -->
+        <h3>提出期限・状況確認</h3>
+        <ul>
+          <li>提出期限の目安：入場の1か月前まで</li>
+          <li>最新の依頼・提出状況：管理表「安全書類確認状況」で確認</li>
+        </ul>
+
+        <!-- 催促 -->
+        <h3>提出を急ぎたい場合（催促）</h3>
+        <ul>
+          <li>現場から直接連絡（電話／Teams）</li>
+          <li>建築事務へ共有 → 事務側からも催促・調整を実施</li>
+        </ul>
+
+        <h3>催促の例文（コピペ可）</h3>
+        <blockquote>
+          「◯◯工事の安全書類につきまして、提出が未確認です。<br>
+          入場は◯/◯予定のため、本日中のご対応をお願いいたします。」
+        </blockquote>
+
+        <!-- FAQ -->
+        <h3>よくある質問（FAQ）</h3>
+        <p>Q. 契約前でも書類依頼したい場合？</p>
+        <p>A. 以下すべてを満たす場合、例外的に可能：</p>
+        <ul>
+          <li>入場日と契約日程に矛盾がない（<em>注文日 → 工期開始 → 入場日</em>の順が保たれる）</li>
+          <li>入場日の前倒しの可能性がない</li>
+          <li>協力会社がGS加入済（別現場で提出履歴あり）</li>
+          <li>現場から直接の声かけが可能</li>
+        </ul>
+
+        <!-- 補足 -->
+        <h3>補足（背景）</h3>
+        <p>
+          GS運用は契約と連動します。契約未整備のまま依頼すると、入力済み書類の作り直しや注文書の再発行が発生します。
+          そのため未契約協力会社への依頼は原則不可としています。
+        </p>
+      </section>
+
+      <!-- ===========================
+           建築事務サポート【2】
+         =========================== -->
+      <section id="sec-support-2" class="section" tabindex="-1" aria-labelledby="sec-support-2-title">
+        <h1 id="sec-support-2-title">新規入場者名簿</h1>
+        <p class="lead">この項目は準備中です。順次更新していきます。</p>
+      </section>
+
+      <!-- ===========================
+           建築事務サポート【3】
+         =========================== -->
+      <section id="sec-support-3" class="section" tabindex="-1" aria-labelledby="sec-support-3-title">
+        <h1 id="sec-support-3-title">施工体制台帳</h1>
+        <p class="lead">この項目は準備中です。順次更新していきます。</p>
+      </section>
+
+      <!-- ===========================
+           建築事務サポート【4】
+         =========================== -->
+      <section id="sec-support-4" class="section" tabindex="-1" aria-labelledby="sec-support-4-title">
+        <h1 id="sec-support-4-title">デジタルサイネージ</h1>
         <p class="lead">この項目は準備中です。順次更新していきます。</p>
       </section>
 
